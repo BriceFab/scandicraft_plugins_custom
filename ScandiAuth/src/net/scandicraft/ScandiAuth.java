@@ -19,10 +19,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ScandiAuth extends JavaPlugin implements Listener {
 
-    public ScandiAuth INSTANCE;
+    public static ScandiAuth INSTANCE;
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
         CustomPacketManager.registerPackets();
         Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -66,7 +67,7 @@ public class ScandiAuth extends JavaPlugin implements Listener {
         }
 
         if (!isUsingClient) {
-            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !");
+//            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !");
         }
     }
 
@@ -74,8 +75,18 @@ public class ScandiAuth extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
 
         getLogger().info("on join");
-        CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
+//        CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
+            }
+        }.runTaskLater(this, 2);
 
     }
 
+    public static ScandiAuth getInstance() {
+        return INSTANCE;
+    }
 }

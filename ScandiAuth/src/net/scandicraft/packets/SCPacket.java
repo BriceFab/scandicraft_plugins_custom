@@ -22,9 +22,9 @@ public abstract class SCPacket implements Packet {
         handle(packetListener);
     }
 
-    public abstract void readPacketData(PacketDataSerializer data);
+    public abstract void readPacketData(PacketDataSerializer data) throws IOException;
 
-    public abstract void writePacketData(PacketDataSerializer data);
+    public abstract void writePacketData(PacketDataSerializer data) throws IOException;
 
     public abstract void handle(PacketListener listener);
 }

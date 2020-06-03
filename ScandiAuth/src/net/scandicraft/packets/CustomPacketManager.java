@@ -11,6 +11,7 @@ import com.google.common.collect.BiMap;
 import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
+import net.scandicraft.packets.client.CPacketMoreData;
 import net.scandicraft.packets.server.SPacket;
 import net.scandicraft.packets.server.SPacketHelloWorld;
 import org.bukkit.entity.Player;
@@ -25,10 +26,11 @@ public class CustomPacketManager {
 
     public static void registerPackets() {
         registerPacket(SPacketHelloWorld.class, PacketsID.SPacketHelloWorld, Sender.SERVER);
+        registerPacket(CPacketMoreData.class, PacketsID.CPacketMoreData, Sender.CLIENT);
     }
 
     public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender) {
-        final PacketType packetType = new PacketType(Protocol.PLAY, sender, packetId, -1);
+        final PacketType packetType = new PacketType(Protocol.PLAY, sender, packetId, packetId); //TODO Remplace packetID with -1 if bugs
         packetToType.put(packetClass, packetType);
 
         final EnumProtocol protocol = EnumProtocol.PLAY;
