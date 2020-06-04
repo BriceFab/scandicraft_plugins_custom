@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.scandicraft.ScandiAuth;
+import net.scandicraft.packets.client.CPacketAuthToken;
 import net.scandicraft.packets.client.CPacketMoreData;
 import net.scandicraft.packets.server.SPacket;
 import net.scandicraft.packets.server.SPacketHelloWorld;
@@ -26,21 +27,19 @@ public class CustomPacketManager {
     public static final HashMap<Class<? extends SCPacket>, PacketType> packetToType = new HashMap<>();
 
     public static void registerPackets() {
-        registerPacket(SPacketHelloWorld.class, PacketsID.SPacketHelloWorld, Sender.SERVER);
-        registerPacket(CPacketMoreData.class, PacketsID.CPacketMoreData, Sender.CLIENT);
+        registerPacket(SPacketHelloWorld.class, PacketsID.SPacketHelloWorld, Sender.SERVER, EnumProtocol.PLAY);
+        registerPacket(CPacketMoreData.class, PacketsID.CPacketMoreData, Sender.CLIENT, EnumProtocol.PLAY);
+        registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
     }
 
-    public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender) {
+    public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender, EnumProtocol protocol) {
         final PacketType packetType = new PacketType(Protocol.PLAY, sender, packetId, packetId); //TODO Remplace packetID with -1 if bugs
         packetToType.put(packetClass, packetType);
-
-        final EnumProtocol protocol = EnumProtocol.PLAY;
 
         final EnumProtocolDirection direction = packetType.isClient() ? EnumProtocolDirection.SERVERBOUND : EnumProtocolDirection.CLIENTBOUND;
 
         try {
             //protocol.a().put(packetIdm packetClass);
-
             Map<EnumProtocolDirection, BiMap<Integer, Class<? extends Packet<?>>>> theMap = (Map<EnumProtocolDirection, BiMap<Integer, Class<? extends Packet<?>>>>) FieldUtils.readField(protocol, "j", true);
             BiMap<Integer, Class<? extends Packet<?>>> biMap = theMap.get(direction);
             biMap.put(packetId, (Class<? extends Packet<?>>) packetClass);

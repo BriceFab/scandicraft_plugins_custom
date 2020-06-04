@@ -6,8 +6,14 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import net.scandicraft.config.ScandiCraftMultiplayer;
+import net.scandicraft.http.HTTPEndpoints;
+import net.scandicraft.http.HTTPReply;
+import net.scandicraft.http.HTTPUtils;
 import net.scandicraft.packets.CustomPacketManager;
+import net.scandicraft.packets.client.CPacketAuthToken;
 import net.scandicraft.packets.server.SPacketHelloWorld;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,7 +32,7 @@ import java.util.UUID;
 public class ScandiAuth extends JavaPlugin implements Listener {
 
     public static ScandiAuth INSTANCE;
-    private List<UUID> playersUsingClient = new ArrayList<>();  //players qui utilisent le client ScandiCraft
+    private final List<UUID> playersUsingClient = new ArrayList<>();  //players qui utilisent le client ScandiCraft
 
     @Override
     public void onEnable() {
@@ -54,29 +60,39 @@ public class ScandiAuth extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
 
+        final Player player = e.getPlayer();
+
         //TODO check username et uuid
-        getLogger().info("login Player uuid  " + e.getPlayer().getUniqueId());
-        getLogger().info("hostname " + e.getHostname());
+        getLogger().info("login Player uuid  " + player.getUniqueId());
+//        getLogger().info("hostname " + e.getHostname());
 
         String[] hostname = e.getHostname().split(":")[0].split("\0");
         boolean isUsingClient = false;
 
         if (hostname.length == 2) {
             if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
+                System.out.print("ScandiAuth: TODO verify token " + CPacketAuthToken.token);
+                List<NameValuePair> params = new ArrayList<>();
+                params.add(new BasicNameValuePair("token", CPacketAuthToken.token));
+                params.add(new BasicNameValuePair("name", player.getName()));
+                params.add(new BasicNameValuePair("uuid", player.getUniqueId().toString()));
+                HTTPReply httpReply = HTTPUtils.sendGet(HTTPEndpoints.VERIFY_TOKEN, params);
+                getLogger().warning("httpReply verif token: " + httpReply.getStatusCode());
                 isUsingClient = true;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        playersUsingClient.add(e.getPlayer().getUniqueId());
-                        e.getPlayer().sendMessage(ChatColor.GREEN + "Merci d'utiliser le client ScandiCraft !");
-                        CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
-                    }
-                }.runTaskLater(this, 2);
             }
         }
 
         if (!isUsingClient) {
             e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !");
+        } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    playersUsingClient.add(player.getUniqueId());
+                    player.sendMessage(ChatColor.GREEN + "Merci d'utiliser le client ScandiCraft !");
+                    CustomPacketManager.sendCustomPacket(player, new SPacketHelloWorld());
+                }
+            }.runTaskLater(this, 2);
         }
     }
 
