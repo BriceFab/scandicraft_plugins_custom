@@ -11,6 +11,7 @@ import com.google.common.collect.BiMap;
 import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
+import net.scandicraft.ScandiAuth;
 import net.scandicraft.packets.client.CPacketMoreData;
 import net.scandicraft.packets.server.SPacket;
 import net.scandicraft.packets.server.SPacketHelloWorld;
@@ -56,7 +57,12 @@ public class CustomPacketManager {
 
     public static void sendCustomPacket(Player player, SPacket packet) {
 
-        //TODO: Check to make sure the client is ScandiCraft before sending packet
+        //Check if player using ScandiCraft Client before sending packet
+        if (!ScandiAuth.getInstance().isPlayerUsingClient(player)) {
+            ScandiAuth.getInstance().getLogger().warning("Player " + player.getName() + " is not using ScandiCraft Client. Packet " + packet.getClass().getSimpleName() + " is not sent !");
+            return;
+        }
+
         PacketContainer container = new PacketContainer(packetToType.get(packet.getClass()), packet);
         try {
             ProtocolLibrary.getProtocolManager().sendServerPacket(player, container);
