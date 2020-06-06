@@ -1,28 +1,44 @@
 package net.scandicraft.http;
 
+import com.google.gson.Gson;
+import net.scandicraft.ScandiAuth;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
 
 import java.util.List;
 
-public class HTTPUtils {
+public class HTTPClient {
 
-    public static HTTPReply sendGet(String endpoint) {
-        return sendGet(endpoint, null);
+    private final Header[] headers;
+
+    public HTTPClient(final String api_token) {
+        this.headers = new Header[]{
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"),
+                new BasicHeader(HttpHeaders.ACCEPT, "application/json"),
+                new BasicHeader(HttpHeaders.AUTHORIZATION, "Bearer " + api_token),
+        };
     }
 
-    public static HTTPReply sendGet(String endpoint, List<NameValuePair> params) {
+    public HTTPReply get(String endpoint) {
+        return get(endpoint, null);
+    }
+
+    public HTTPReply get(String endpoint, List<NameValuePair> params) {
         try {
             if (params != null) {
                 endpoint += "?" + URLEncodedUtils.format(params, "UTF-8");
             }
             HttpGet httpGet = new HttpGet(endpoint);
+            httpGet.setHeaders(this.headers);
             HttpClient httpClient = HttpClientBuilder.create().build();
             HttpResponse httpResponse = httpClient.execute(httpGet);
             return new HTTPReply(httpResponse);
@@ -32,12 +48,15 @@ public class HTTPUtils {
         }
     }
 
-    public static HTTPReply sendPost(String endpoint, List<NameValuePair> params) {
+    public HTTPReply post(String endpoint, Object entity) {
         try {
             HttpPost httpPost = new HttpPost(endpoint);
+            httpPost.setHeaders(this.headers);
 
-            if (params != null) {
-                httpPost.setEntity(new UrlEncodedFormEntity(params));
+            if (entity != null) {
+                Gson gson = new Gson();
+                String json = gson.toJson(entity);
+                httpPost.setEntity(new StringEntity(json));
             }
 
             HttpClient httpClient = HttpClientBuilder.create().build();
@@ -49,11 +68,11 @@ public class HTTPUtils {
         }
     }
 
-    public static void sendPostAsync(String endpoint, List<NameValuePair> params) {
+    public void postAsync(String endpoint, List<NameValuePair> params) {
         new Thread() {
             @Override
             public void run() {
-                sendPost(endpoint, params);
+                post(endpoint, params);
             }
         }.start();
     }

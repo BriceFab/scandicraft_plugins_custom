@@ -6,20 +6,18 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import net.scandicraft.config.ScandiCraftMultiplayer;
+import net.scandicraft.http.HTTPClient;
 import net.scandicraft.http.HTTPEndpoints;
 import net.scandicraft.http.HTTPReply;
-import net.scandicraft.http.HTTPUtils;
+import net.scandicraft.http.HttpStatus;
+import net.scandicraft.http.entity.VerifyTokenEntity;
 import net.scandicraft.packets.CustomPacketManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
-import net.scandicraft.packets.server.SPacketHelloWorld;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,7 +44,7 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
 
                 WrappedServerPing ping = event.getPacket().getServerPings().read(0);
                 ping.setVersionProtocol(ScandiCraftMultiplayer.PING_VERSION);
-                ping.setVersionName(String.format("[%s] %s", ScandiCraftMultiplayer.CLIENT_NAME, ScandiCraftMultiplayer.CLIENT_VERSION));
+                ping.setVersionName(String.format("[Launcher] %s", ScandiCraftMultiplayer.CLIENT_NAME));
 
             }
         });
@@ -59,26 +57,25 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
-
         final Player player = e.getPlayer();
-
-        //TODO check username et uuid
-        getLogger().info("login Player uuid  " + player.getUniqueId());
-//        getLogger().info("hostname " + e.getHostname());
 
         String[] hostname = e.getHostname().split(":")[0].split("\0");
         boolean isUsingClient = false;
 
         if (hostname.length == 2) {
             if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
-                System.out.print("ScandiAuth: TODO verify token " + CPacketAuthToken.token);
-                List<NameValuePair> params = new ArrayList<>();
-                params.add(new BasicNameValuePair("token", CPacketAuthToken.token));
-                params.add(new BasicNameValuePair("name", player.getName()));
-                params.add(new BasicNameValuePair("uuid", player.getUniqueId().toString()));
-                HTTPReply httpReply = HTTPUtils.sendGet(HTTPEndpoints.VERIFY_TOKEN, params);
-                getLogger().warning("httpReply verif token: " + httpReply.getStatusCode());
-                isUsingClient = true;
+                VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), CPacketAuthToken.token);
+                HTTPClient httpClient = new HTTPClient(CPacketAuthToken.token);
+                HTTPReply httpReply = httpClient.post(HTTPEndpoints.VERIFY_TOKEN, entity);
+
+                //Http traitement de la réponse
+                if (httpReply.getStatusCode() == HttpStatus.HTTP_OK) {
+                    if (httpReply.getJsonResponse().get("username").toString().equals(player.getName()) && httpReply.getJsonResponse().get("uuid").toString().equals(player.getUniqueId().toString())) {
+                        isUsingClient = true;
+                    }
+                } else {
+                    e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: " + httpReply.getJsonResponse().get("error"));
+                }
             }
         }
 
@@ -89,26 +86,10 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
                 @Override
                 public void run() {
                     playersUsingClient.add(player.getUniqueId());
-                    player.sendMessage(ChatColor.GREEN + "Merci d'utiliser le client ScandiCraft !");
-                    CustomPacketManager.sendCustomPacket(player, new SPacketHelloWorld());
+                    player.sendMessage(ChatColor.GREEN + "Authentifié avec succès sur ScandiCraft !");
                 }
-            }.runTaskLater(this, 2);
+            }.runTaskLater(this, 3);
         }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-
-        getLogger().info("on join");
-//        CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
-
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                CustomPacketManager.sendCustomPacket(e.getPlayer(), new SPacketHelloWorld());
-//            }
-//        }.runTaskLater(this, 2);
-
     }
 
     @EventHandler

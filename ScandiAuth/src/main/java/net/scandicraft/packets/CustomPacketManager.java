@@ -13,9 +13,7 @@ import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.scandicraft.ScandiAuth;
 import net.scandicraft.packets.client.CPacketAuthToken;
-import net.scandicraft.packets.client.CPacketMoreData;
 import net.scandicraft.packets.server.SPacket;
-import net.scandicraft.packets.server.SPacketHelloWorld;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,8 +25,6 @@ public class CustomPacketManager {
     public static final HashMap<Class<? extends SCPacket>, PacketType> packetToType = new HashMap<>();
 
     public static void registerPackets() {
-        registerPacket(SPacketHelloWorld.class, PacketsID.SPacketHelloWorld, Sender.SERVER, EnumProtocol.PLAY);
-        registerPacket(CPacketMoreData.class, PacketsID.CPacketMoreData, Sender.CLIENT, EnumProtocol.PLAY);
         registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
     }
 

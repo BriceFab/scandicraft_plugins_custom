@@ -1,5 +1,7 @@
 package net.scandicraft.http;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
@@ -24,6 +26,10 @@ public class HTTPReply {
 
     public String getBody() {
         return body;
+    }
+
+    public JsonObject getJsonResponse() {
+        return new Gson().fromJson(this.body, JsonObject.class);
     }
 
     public int getStatusCode() {

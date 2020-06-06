@@ -16,6 +16,6 @@ public class CPacketAuthToken extends CPacket {
 
     @Override
     public void handle(PacketListener listener) {
-        System.out.print("Receive token: " + token);
+//        System.out.print("Receive token: " + token);
     }
 }
