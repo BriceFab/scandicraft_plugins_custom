@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ScandiAuth extends JavaPlugin implements Listener {
+public final class ScandiAuth extends JavaPlugin implements Listener {
 
     public static ScandiAuth INSTANCE;
     private final List<UUID> playersUsingClient = new ArrayList<>();  //players qui utilisent le client ScandiCraft

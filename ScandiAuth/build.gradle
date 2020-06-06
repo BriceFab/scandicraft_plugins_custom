@@ -1,0 +1,51 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+
+group = 'ScandiAuth'    //Nom du plugin
+version = '1.0.0'       //Version du plugin
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'spigotmc-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven { url "https://repo.dmulloy2.net/nexus/repository/public/" }
+}
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    implementation files('D:/sources/scandicraft/scandicraft_server/Paper/PaperSpigot-Server/target/paperspigot-1.8.8-R0.1-SNAPSHOT.jar')
+//    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    //MC plugins libraries
+    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.5.0";
+    //Plugin java libraries (utiliser shade pour inclure dans le build du plugin)
+    shade group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.3.2'
+    shade group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.3'
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep)) {
+            exclude 'META-INF', 'META-INF/**'
+        }
+    }
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}

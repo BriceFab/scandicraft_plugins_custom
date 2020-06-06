@@ -1,7 +1,0 @@
-name: ScandiAuth
-version: 1.0.0
-author: BriceFab
-description: Authentification et vérification client ScandiCraft
-main: net.scandicraft.ScandiAuth
-depend:
-  - ProtocolLib

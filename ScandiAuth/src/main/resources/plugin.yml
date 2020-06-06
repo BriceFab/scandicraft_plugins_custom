@@ -1,0 +1,8 @@
+name: ScandiAuth
+version: @version@
+main: net.scandicraft.ScandiAuth
+prefix: ScandiAuth
+depend: [ProtocolLib]
+author: BriceFab
+description: Authentification ScandiCraft client
+website: https://scandicraft-mc.fr
