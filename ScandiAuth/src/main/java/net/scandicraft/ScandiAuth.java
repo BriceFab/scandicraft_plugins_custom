@@ -64,17 +64,24 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
 
         if (hostname.length == 2) {
             if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
-                VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), CPacketAuthToken.token);
-                HTTPClient httpClient = new HTTPClient(CPacketAuthToken.token);
-                HTTPReply httpReply = httpClient.post(HTTPEndpoints.VERIFY_TOKEN, entity);
+                try {
+                    VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), CPacketAuthToken.token);
+                    HTTPClient httpClient = new HTTPClient(CPacketAuthToken.token);
+                    HTTPReply httpReply = httpClient.post(HTTPEndpoints.VERIFY_TOKEN, entity);
+//                    getLogger().info("VerifyToken Response: " + httpReply.getStatusCode() + " - " + httpReply.getJsonResponse());
 
-                //Http traitement de la réponse
-                if (httpReply.getStatusCode() == HttpStatus.HTTP_OK) {
-                    if (httpReply.getJsonResponse().get("username").toString().equals(player.getName()) && httpReply.getJsonResponse().get("uuid").toString().equals(player.getUniqueId().toString())) {
-                        isUsingClient = true;
+                    //Http traitement de la réponse
+                    if (httpReply.getStatusCode() == HttpStatus.HTTP_OK) {
+                        if (httpReply.getJsonResponse().get("username").getAsString().equals(player.getName()) && httpReply.getJsonResponse().get("uuid").getAsString().equals(player.getUniqueId().toString())) {
+                            isUsingClient = true;
+                        }
+                    } else {
+                        e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: " + httpReply.getJsonResponse().get("error"));
+                        return;
                     }
-                } else {
-                    e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: " + httpReply.getJsonResponse().get("error"));
+                } catch (Exception exception) {
+                    e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur lors de l'authentification");
+                    return;
                 }
             }
         }
