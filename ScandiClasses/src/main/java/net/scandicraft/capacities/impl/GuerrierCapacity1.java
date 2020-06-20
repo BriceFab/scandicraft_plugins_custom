@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-/*
-Capacité 1: donne 10 secondes de force II
+/**
+ * Capacité 1: donne 10 secondes de force II
  */
 public class GuerrierCapacity1 extends BaseCapacity {
     @Override

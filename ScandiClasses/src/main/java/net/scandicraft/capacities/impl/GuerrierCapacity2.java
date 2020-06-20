@@ -7,26 +7,28 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
- * soigne lui + la personne qui vise
+ * téléporte le joueur visé sur lui
  */
-public class MagicienCapacity2 extends BaseCapacity {
+public class GuerrierCapacity2 extends BaseCapacity {
     @Override
     public String getName() {
-        return "MagicienCapacity2";
+        return "GuerrierCapacity2";
     }
 
     @Override
     public int getCooldownTime() {
-        return 3 * 60;  //3 mn
+        return 3 * 60;     //3 mn
     }
 
     @Override
     public void onUse(Player sender, ICapacityTarget target) {
-        sender.setHealth(sender.getMaxHealth());
+        //TODO check target here
         if (target != null && target.getTarget() instanceof Player) {
             Player playerTarget = (Player) target.getTarget();
-            playerTarget.setHealth(playerTarget.getMaxHealth());
-            playerTarget.sendMessage(String.format("%s%s %s a utilisé la capacité %s sur vous.", ChatColor.GREEN, Config.PREFIX, sender.getDisplayName(), this.getName()));
+            playerTarget.teleport(sender.getLocation());
+            playerTarget.sendMessage(String.format("%s%s %s a utilisé la capacité %s sur vous.", ChatColor.RED, Config.PREFIX, sender.getDisplayName(), this.getName()));
+        } else {
+            sender.sendMessage("No target player");
         }
     }
 }

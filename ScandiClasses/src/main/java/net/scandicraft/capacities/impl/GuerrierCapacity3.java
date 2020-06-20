@@ -7,6 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+/**
+ * speed 3 pendant 5 secondes et 5 coeurs d'absorption
+ */
 public class GuerrierCapacity3 extends BaseCapacity {
     @Override
     public String getName() {
