@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 /**
- * téléporte le joueur visé sur lui
+ * se téléporte sur le joueur visé
  */
 public class GuerrierCapacity2 extends BaseCapacity {
     @Override
@@ -25,7 +25,7 @@ public class GuerrierCapacity2 extends BaseCapacity {
         //TODO check target here
         if (target != null && target.getTarget() instanceof Player) {
             Player playerTarget = (Player) target.getTarget();
-            playerTarget.teleport(sender.getLocation());
+            sender.teleport(playerTarget.getLocation());
             playerTarget.sendMessage(String.format("%s%s %s a utilisé la capacité %s sur vous.", ChatColor.RED, Config.PREFIX, sender.getDisplayName(), this.getName()));
         } else {
             sender.sendMessage("No target player");
