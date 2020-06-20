@@ -45,6 +45,7 @@ public class CapacitiesListener implements Listener {
                 GuerrierCapacity2 g2 = new GuerrierCapacity2();
                 ArcherCapacity3 a3 = new ArcherCapacity3();
                 MagicienCapacity1 m1 = new MagicienCapacity1();
+                ArcherCapacity1 a1 = new ArcherCapacity1();
 
                 int raduis = 10;
                 List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
@@ -52,7 +53,7 @@ public class CapacitiesListener implements Listener {
                 if (target.getTarget() == null) {
                     player.sendMessage(ChatColor.RED + " no target");
                 } else {
-                    CapacityManager.getInstance().useCapacity(player, m1, target);
+                    CapacityManager.getInstance().useCapacity(player, a1, target);
                 }
             }
         }
