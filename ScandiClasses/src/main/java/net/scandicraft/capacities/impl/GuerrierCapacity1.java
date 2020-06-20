@@ -1,5 +1,6 @@
-package net.scandicraft.capacities;
+package net.scandicraft.capacities.impl;
 
+import net.scandicraft.capacities.BaseCapacity;
 import net.scandicraft.capacities.target.ICapacityTarget;
 import net.scandicraft.utils.MathUtils;
 import org.bukkit.entity.Player;
@@ -9,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 /*
 Capacité 1: donne 10 secondes de force II
  */
-public class GuerrierCapacity1 implements ICapacity {
+public class GuerrierCapacity1 extends BaseCapacity {
     @Override
     public String getName() {
         return "GuerrierCapacity1";
@@ -17,7 +18,12 @@ public class GuerrierCapacity1 implements ICapacity {
 
     @Override
     public void onUse(Player sender, ICapacityTarget target) {
-        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(10), 2));
+        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(10), 1));
+    }
+
+    @Override
+    public Integer getCooldownTime() {
+        return 30;    //30 secondes
     }
 
 }

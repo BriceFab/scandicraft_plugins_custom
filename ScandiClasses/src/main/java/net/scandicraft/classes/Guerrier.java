@@ -1,6 +1,6 @@
 package net.scandicraft.classes;
 
-import net.scandicraft.capacities.GuerrierCapacity1;
+import net.scandicraft.capacities.impl.GuerrierCapacity1;
 import net.scandicraft.capacities.ICapacity;
 
 import java.util.ArrayList;
