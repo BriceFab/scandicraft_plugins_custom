@@ -11,8 +11,6 @@ import com.google.common.collect.BiMap;
 import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
-import net.scandicraft.ScandiAuth;
-import net.scandicraft.packets.client.CPacketAuthToken;
 import net.scandicraft.packets.server.SPacket;
 import org.bukkit.entity.Player;
 
@@ -25,7 +23,7 @@ public class CustomPacketManager {
     public static final HashMap<Class<? extends SCPacket>, PacketType> packetToType = new HashMap<>();
 
     public static void registerPackets() {
-        registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
+//        registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
     }
 
     public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender, EnumProtocol protocol) {
@@ -51,12 +49,6 @@ public class CustomPacketManager {
     }
 
     public static void sendCustomPacket(Player player, SPacket packet) {
-
-        //Check if player using ScandiCraft Client before sending packet
-        if (!ScandiAuth.getInstance().isPlayerUsingClient(player)) {
-            ScandiAuth.getInstance().getLogger().warning("Player " + player.getName() + " is not using ScandiCraft Client. Packet " + packet.getClass().getSimpleName() + " is not sent !");
-            return;
-        }
 
         PacketContainer container = new PacketContainer(packetToType.get(packet.getClass()), packet);
         try {
