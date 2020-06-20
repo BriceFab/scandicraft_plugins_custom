@@ -1,10 +1,7 @@
 package net.scandicraft.capacities.listeners;
 
 import net.scandicraft.capacities.CapacityManager;
-import net.scandicraft.capacities.impl.GuerrierCapacity1;
-import net.scandicraft.capacities.impl.GuerrierCapacity2;
-import net.scandicraft.capacities.impl.GuerrierCapacity3;
-import net.scandicraft.capacities.impl.MagicienCapacity2;
+import net.scandicraft.capacities.impl.*;
 import net.scandicraft.capacities.target.ICapacityTarget;
 import net.scandicraft.capacities.target.PlayerTarget;
 import org.bukkit.ChatColor;
@@ -46,13 +43,14 @@ public class CapacitiesListener implements Listener {
                 GuerrierCapacity3 g3 = new GuerrierCapacity3();
                 MagicienCapacity2 m2 = new MagicienCapacity2(); //TODO target PLAYER
                 GuerrierCapacity2 g2 = new GuerrierCapacity2();
+                ArcherCapacity3 a3 = new ArcherCapacity3();
                 int raduis = 10;
                 List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
                 ICapacityTarget target = new PlayerTarget((Player) getTarget(player, playersInRadius));
                 if (target.getTarget() == null) {
                     player.sendMessage(ChatColor.RED + " no target");
                 } else {
-                    CapacityManager.getInstance().useCapacity(player, g2, target);
+                    CapacityManager.getInstance().useCapacity(player, a3, target);
                 }
             }
         }
