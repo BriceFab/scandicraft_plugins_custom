@@ -17,7 +17,7 @@ public interface ICapacity {
      *
      * @return temps
      */
-    Integer getCooldownTime();
+    int getCooldownTime();
 
     /**
      * Utilise la capacité

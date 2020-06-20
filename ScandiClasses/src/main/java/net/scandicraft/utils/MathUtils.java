@@ -9,7 +9,11 @@ public class MathUtils {
     }
 
     public static int convertMinutesToTicks(int minutes) {
-        return TICK_SECONDS * 60 * minutes;
+        return TICK_SECONDS * minutes * 60;
+    }
+
+    public static int convertMinutesToSecondes(int minutes) {
+        return minutes * 60;
     }
 
 }

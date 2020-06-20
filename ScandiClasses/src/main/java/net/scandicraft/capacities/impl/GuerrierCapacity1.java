@@ -22,7 +22,7 @@ public class GuerrierCapacity1 extends BaseCapacity {
     }
 
     @Override
-    public Integer getCooldownTime() {
+    public int getCooldownTime() {
         return 30;    //30 secondes
     }
 
