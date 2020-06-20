@@ -1,6 +1,7 @@
 package net.scandicraft.capacities;
 
 import net.scandicraft.CapacityCooldown;
+import net.scandicraft.capacities.target.ICapacityTarget;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -15,10 +16,10 @@ public class CapacityManager {
 
     private final HashMap<UUID, CapacityCooldown> cooldowns = new HashMap<>();
 
-    public void useCapacity(Player sender, ICapacity capacity) {
+    public void useCapacity(Player sender, ICapacity capacity, ICapacityTarget target) {
         if (canUseCapacity(sender, capacity)) {
             capacity.sendSucessMessage(sender);
-            capacity.onUse(sender, null);   //TODO target
+            capacity.onUse(sender, target);
         } else {
             CapacityCooldown capacityCooldown = this.cooldowns.get(sender.getUniqueId());
             capacity.sendWaitingMessage(sender, calculateRemainingTime(capacityCooldown));
