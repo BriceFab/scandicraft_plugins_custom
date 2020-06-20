@@ -1,16 +1,12 @@
 package net.scandicraft;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedServerPing;
 import net.scandicraft.config.ScandiCraftMultiplayer;
 import net.scandicraft.http.HTTPClient;
 import net.scandicraft.http.HTTPEndpoints;
 import net.scandicraft.http.HTTPReply;
 import net.scandicraft.http.HttpStatus;
 import net.scandicraft.http.entity.VerifyTokenEntity;
+import net.scandicraft.packetListeners.ProtocolLibManager;
 import net.scandicraft.packets.CustomPacketManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
 import org.bukkit.Bukkit;
@@ -38,16 +34,17 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
         CustomPacketManager.registerPackets();
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Status.Server.SERVER_INFO) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-
-                WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-                ping.setVersionProtocol(ScandiCraftMultiplayer.PING_VERSION);
-                ping.setVersionName(String.format("[Launcher] %s", ScandiCraftMultiplayer.CLIENT_NAME));
-
-            }
-        });
+        ProtocolLibManager.getInstance().registerListeners(this);
+//        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Status.Server.SERVER_INFO) {
+//            @Override
+//            public void onPacketSending(PacketEvent event) {
+//
+//                WrappedServerPing ping = event.getPacket().getServerPings().read(0);
+//                ping.setVersionProtocol(ScandiCraftMultiplayer.PING_VERSION);
+//                ping.setVersionName(String.format("[Launcher] %s", ScandiCraftMultiplayer.CLIENT_NAME));
+//
+//            }
+//        });
     }
 
     @Override
