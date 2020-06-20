@@ -3,6 +3,7 @@ package net.scandicraft.capacities.listeners;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.impl.GuerrierCapacity1;
 import net.scandicraft.capacities.impl.GuerrierCapacity3;
+import net.scandicraft.capacities.impl.MagicienCapacity2;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,8 +35,8 @@ public class CapacitiesListener implements Listener {
 
                 GuerrierCapacity1 g1 = new GuerrierCapacity1();
                 GuerrierCapacity3 g3 = new GuerrierCapacity3();
-//                g1.onUse(player, null);
-                CapacityManager.getInstance().useCapacity(player, g3);
+                MagicienCapacity2 m2 = new MagicienCapacity2(); //TODO target PLAYER
+                CapacityManager.getInstance().useCapacity(player, m2);
             }
         }
     }
