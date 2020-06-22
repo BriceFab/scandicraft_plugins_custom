@@ -6,8 +6,19 @@ import java.util.ArrayList;
 
 public interface IClasse {
 
-    String getClasseName();
+    /**
+     * @return le type de classe
+     */
+    ClasseType getClassType();
 
+    /**
+     * @return nom de la classe
+     */
+    String getDisplayClasseName();
+
+    /**
+     * Les capacités liées à la classe
+     */
     ArrayList<ICapacity> getCapacities();
 
 }

@@ -20,17 +20,21 @@ public class ProtocolLibManager {
     }
 
     private void registerPacketAdapter(PacketAdapter packetAdapter) {
-        Set<PacketListener> packetListeners = ProtocolLibrary.getProtocolManager().getPacketListeners();
-        ScandiAuth.getInstance().getLogger().info("PacketAdapters count: " + packetListeners.size());
+        try {
+            Set<PacketListener> packetListeners = ProtocolLibrary.getProtocolManager().getPacketListeners();
+//            ScandiAuth.getInstance().getLogger().info("PacketAdapters count: " + packetListeners.size());
 
 //        ProtocolLibrary.getProtocolManager().removePacketListeners(packetAdapter.getPlugin());
 //        ProtocolLibrary.getProtocolManager().removePacketListener(packetAdapter);
 
-        if (!packetListeners.contains(packetAdapter)) {
-            ProtocolLibrary.getProtocolManager().addPacketListener(packetAdapter);
-            ScandiAuth.getInstance().getLogger().info("PacketAdapter " + packetAdapter.getClass() + " register successfully.");
-        } else {
-            ScandiAuth.getInstance().getLogger().warning("PacketAdapter " + packetAdapter.getClass() + " already register.");
+            if (!packetListeners.contains(packetAdapter)) {
+                ProtocolLibrary.getProtocolManager().addPacketListener(packetAdapter);
+                ScandiAuth.getInstance().getLogger().info("PacketAdapter " + packetAdapter.getClass() + " register successfully.");
+            } else {
+                ScandiAuth.getInstance().getLogger().warning("PacketAdapter " + packetAdapter.getClass() + " already register.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

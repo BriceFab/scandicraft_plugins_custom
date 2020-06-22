@@ -6,3 +6,4 @@ depend: [ProtocolLib]
 author: BriceFab
 description: ScandiCraft Plugin classes and capacities
 website: https://scandicraft-mc.fr
+database: true

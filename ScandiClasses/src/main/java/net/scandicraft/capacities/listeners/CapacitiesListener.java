@@ -1,12 +1,11 @@
 package net.scandicraft.capacities.listeners;
 
+import net.scandicraft.LogManager;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.impl.*;
-import net.scandicraft.capacities.target.ICapacityTarget;
-import net.scandicraft.capacities.target.PlayerTarget;
-import org.bukkit.ChatColor;
+import net.scandicraft.classes.Guerrier;
+import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.util.Vector;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CapacitiesListener implements Listener {
 
@@ -48,13 +44,19 @@ public class CapacitiesListener implements Listener {
                 ArcherCapacity1 a1 = new ArcherCapacity1();
                 ArcherCapacity2 a2 = new ArcherCapacity2();
 
+                String table = SqlClassesManager.getInstance().getTable();
+                LogManager.consoleInfo("table " + table);
+
+                SqlClassesManager.getInstance().selectClass(player, new Guerrier());
+
+
 //                int raduis = 10;
 //                List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
 //                ICapacityTarget target = new PlayerTarget((Player) getTarget(player, playersInRadius));
 //                if (target.getTarget() == null) {
 //                    player.sendMessage(ChatColor.RED + " no target");
 //                } else {
-                    CapacityManager.getInstance().useCapacity(player, a2, null);
+                CapacityManager.getInstance().useCapacity(player, a2, null);
 //                }
             }
         }

@@ -1,6 +1,7 @@
 package net.scandicraft;
 
 import net.scandicraft.capacities.listeners.CapacitiesListener;
+import net.scandicraft.sql.SqlManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +15,12 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
         INSTANCE = this;
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new CapacitiesListener(), this);
+        SqlManager.getInstance().init();
+    }
+
+    @Override
+    public void onDisable() {
+        SqlManager.getInstance().closeConnection();
     }
 
     public static ScandiClasses getInstance() {

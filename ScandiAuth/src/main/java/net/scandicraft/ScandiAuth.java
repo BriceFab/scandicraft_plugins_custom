@@ -35,16 +35,6 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
 
         ProtocolLibManager.getInstance().registerListeners(this);
-//        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Status.Server.SERVER_INFO) {
-//            @Override
-//            public void onPacketSending(PacketEvent event) {
-//
-//                WrappedServerPing ping = event.getPacket().getServerPings().read(0);
-//                ping.setVersionProtocol(ScandiCraftMultiplayer.PING_VERSION);
-//                ping.setVersionName(String.format("[Launcher] %s", ScandiCraftMultiplayer.CLIENT_NAME));
-//
-//            }
-//        });
     }
 
     @Override
