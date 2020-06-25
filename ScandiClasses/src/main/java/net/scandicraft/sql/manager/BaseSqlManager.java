@@ -44,6 +44,7 @@ public abstract class BaseSqlManager implements ISqlManager {
     private String getFieldsSchema() {
         StringBuilder sql_fields = new StringBuilder();
 
+        ArrayList<SqlField> constraites = new ArrayList<>();
         for (int i = 0; i < this.tableFields.size(); i++) {
             SqlField field = this.tableFields.get(i);
 
@@ -71,6 +72,22 @@ public abstract class BaseSqlManager implements ISqlManager {
 
             if (!isLast) {
                 sql_fields.append(", ");
+            }
+
+            if (field.getIndex() != null) {
+                constraites.add(field);
+            }
+        }
+
+        //Ajouts des INDEX (Constraites)
+        for (SqlField fieldWithConstraite : constraites) {
+            switch (fieldWithConstraite.getIndex()) {
+                default:
+                    LogManager.consoleError("SQL Contrainte " + fieldWithConstraite.getIndex().getName() + " non supporté !");
+                    break;
+                case UNIQUE:
+                    sql_fields.append(String.format(", UNIQUE INDEX `%s` (`%s`)", "unique_" + fieldWithConstraite.getName(), fieldWithConstraite.getName()));
+                    break;
             }
         }
 

@@ -5,6 +5,7 @@ import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.impl.*;
 import net.scandicraft.classes.Guerrier;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,8 +48,12 @@ public class CapacitiesListener implements Listener {
                 String table = SqlClassesManager.getInstance().getTable();
                 LogManager.consoleInfo("table " + table);
 
-                SqlClassesManager.getInstance().selectClass(player, new Guerrier());
-
+                boolean isSuccess = SqlClassesManager.getInstance().selectClass(player, new Guerrier());
+                if (isSuccess) {
+                    player.sendMessage(ChatColor.GREEN + "Classe Guerrière choisie avec succès !");
+                } else {
+                    player.sendMessage(ChatColor.RED + "Erreur lors choix de la classe guerrière..");
+                }
 
 //                int raduis = 10;
 //                List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());

@@ -7,6 +7,7 @@ import net.scandicraft.sql.SqlManager;
 import net.scandicraft.sql.manager.BaseSqlManager;
 import net.scandicraft.sql.manager.SqlField;
 import net.scandicraft.sql.manager.SqlFieldType;
+import net.scandicraft.sql.manager.SqlIndexType;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class SqlClassesManager extends BaseSqlManager {
 
-    private static final SqlClassesManager INSTANCE = new SqlClassesManager(SqlConfig.getTable(SqlConfig.classeTable));
+    private static final SqlClassesManager INSTANCE = new SqlClassesManager(SqlConfig.classeTable);
 
     protected SqlClassesManager(String tableName) {
         super(tableName);
@@ -28,12 +29,18 @@ public class SqlClassesManager extends BaseSqlManager {
 
     @Override
     public void createFieldsSchema() {
-        addSqlField(new SqlField(SqlFieldType.STRING, "uuid", 255, false));
+        addSqlField(new SqlField(SqlFieldType.STRING, "uuid", 255, false, SqlIndexType.UNIQUE));
         addSqlField(new SqlField(SqlFieldType.INT, "class_type", false));
         addSqlField(new SqlField(SqlFieldType.BIGINT, "since", false));
     }
 
-    public void selectClass(Player player, IClasse classe) {
+    /**
+     * Choisi une classe (Guerrier, Archer, Magicien)
+     * @param player Joueur
+     * @param classe Classe
+     * @return success ou erreur
+     */
+    public boolean selectClass(Player player, IClasse classe) {
         try {
             List<String> params = new ArrayList<>();
             params.add("uuid");             //param 1
@@ -47,9 +54,11 @@ public class SqlClassesManager extends BaseSqlManager {
             statement.setLong(3, System.currentTimeMillis());
             statement.executeUpdate();
 
-            LogManager.consoleInfo("selectClass sql " + sql);
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
+
+            return false;
         }
     }
 
