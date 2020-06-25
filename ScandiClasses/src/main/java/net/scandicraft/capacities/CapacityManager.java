@@ -1,6 +1,5 @@
 package net.scandicraft.capacities;
 
-import net.scandicraft.CapacityCooldown;
 import net.scandicraft.capacities.target.ICapacityTarget;
 import org.bukkit.entity.Player;
 

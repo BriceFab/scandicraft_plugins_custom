@@ -1,5 +1,6 @@
-package net.scandicraft;
+package net.scandicraft.logs;
 
+import net.scandicraft.ScandiClasses;
 import net.scandicraft.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

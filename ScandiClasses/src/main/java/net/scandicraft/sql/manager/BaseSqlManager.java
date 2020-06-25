@@ -1,6 +1,6 @@
 package net.scandicraft.sql.manager;
 
-import net.scandicraft.LogManager;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.sql.SqlConfig;
 import net.scandicraft.sql.SqlManager;
 

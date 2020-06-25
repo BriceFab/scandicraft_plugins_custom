@@ -1,6 +1,5 @@
 package net.scandicraft.sql.manager.impl;
 
-import net.scandicraft.LogManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.sql.SqlConfig;
 import net.scandicraft.sql.SqlManager;
@@ -36,6 +35,7 @@ public class SqlClassesManager extends BaseSqlManager {
 
     /**
      * Choisi une classe (Guerrier, Archer, Magicien)
+     *
      * @param player Joueur
      * @param classe Classe
      * @return success ou erreur

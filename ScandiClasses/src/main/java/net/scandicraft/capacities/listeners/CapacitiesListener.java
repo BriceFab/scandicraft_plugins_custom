@@ -1,8 +1,9 @@
 package net.scandicraft.capacities.listeners;
 
-import net.scandicraft.LogManager;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.impl.*;
+import net.scandicraft.classes.ClasseType;
 import net.scandicraft.classes.Guerrier;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.ChatColor;
@@ -50,7 +51,7 @@ public class CapacitiesListener implements Listener {
 
                 boolean isSuccess = SqlClassesManager.getInstance().selectClass(player, new Guerrier());
                 if (isSuccess) {
-                    player.sendMessage(ChatColor.GREEN + "Classe Guerrière choisie avec succès !");
+                    player.sendMessage(ChatColor.GREEN + "Classe " + ClasseType.GUERRIER.getName() + " choisie avec succès !");
                 } else {
                     player.sendMessage(ChatColor.RED + "Erreur lors choix de la classe guerrière..");
                 }

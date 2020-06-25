@@ -1,3 +1,4 @@
+#Infos
 name: ScandiClasses
 version: @version@
 main: net.scandicraft.ScandiClasses
@@ -7,3 +8,9 @@ author: BriceFab
 description: ScandiCraft Plugin classes and capacities
 website: https://scandicraft-mc.fr
 database: true
+
+#Commandes
+commands:
+  test:
+    usage: /<command>
+    description: Commande de test

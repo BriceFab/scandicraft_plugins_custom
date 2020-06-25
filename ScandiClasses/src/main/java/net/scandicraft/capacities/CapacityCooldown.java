@@ -1,4 +1,4 @@
-package net.scandicraft;
+package net.scandicraft.capacities;
 
 import net.scandicraft.capacities.ICapacity;
 

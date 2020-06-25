@@ -8,8 +8,8 @@ public enum ClasseType {
     ARCHER(1, "Archer"),
     MAGICIEN(2, "Magicien");
 
-    private int id;
-    private String name;
+    private final int id;
+    private final String name;
 
     ClasseType(int id, String name) {
         this.id = id;

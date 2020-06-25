@@ -1,6 +1,6 @@
 package net.scandicraft.sql;
 
-import net.scandicraft.LogManager;
+import net.scandicraft.logs.LogManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
