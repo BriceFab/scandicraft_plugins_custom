@@ -11,6 +11,6 @@ database: true
 
 #Commandes
 commands:
-  test:
+  classe:
     usage: /<command>
-    description: Commande de test
+    description: Commande des classes

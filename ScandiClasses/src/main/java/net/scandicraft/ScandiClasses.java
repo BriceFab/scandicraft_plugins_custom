@@ -1,6 +1,8 @@
 package net.scandicraft;
 
 import net.scandicraft.capacities.listeners.CapacitiesListener;
+import net.scandicraft.commands.ClasseCommands;
+import net.scandicraft.commands.CommandList;
 import net.scandicraft.commands.Commands;
 import net.scandicraft.sql.SqlManager;
 import org.bukkit.Bukkit;
@@ -20,8 +22,8 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
 
         SqlManager.getInstance().init();
 
-        Commands cmd = new Commands();
-        getCommand(cmd.command1).setExecutor(cmd);
+        //Register commands
+        getCommand(CommandList.classeCommand).setExecutor(new ClasseCommands());
     }
 
     @Override
