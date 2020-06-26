@@ -5,6 +5,8 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.CommandExecute;
+import net.scandicraft.classes.ClasseType;
+import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,18 +29,16 @@ public class ClasseCommands extends CommandExecute implements Listener, CommandE
             if (args.length > 0) {
                 //Arguments
                 this.handleCommand(args, player);
-                return true;
             } else {
                 //Pas d'arguments
                 this.onNoArg(player);
-                return false;
             }
 
         } else {
             sender.sendMessage(ChatColor.RED + "Vous devez être un joueur pour exécuter cette commande.");
         }
 
-        return false;
+        return true;
     }
 
     private void handleCommand(String[] args, Player player) {
@@ -50,18 +50,33 @@ public class ClasseCommands extends CommandExecute implements Listener, CommandE
                 this.helpCommand(player);
                 break;
             case "join":
-                this.joinCommand(player);
+                this.joinClasseCommand(player, args);
                 break;
         }
     }
 
-    private void joinCommand(Player player) {
-        CommandHelper.sendHoverMessage(
-                player,
-                CommandHelper.formatChatMessage(ChatColor.AQUA, "Rejoindre quel classe ? TODO"),
-                "Clique pour afficher de l'aide",
-                String.format("/%s help", baseCommand)
-        );
+    private void joinClasseCommand(Player player, String[] args) {
+        if (args.length > 1) {
+            String argClasse = args[1];
+            ClasseType classeType = ClasseType.getClasseTypeFromString(argClasse);
+            if (classeType != null) {
+                boolean joinSuccess = SqlClassesManager.getInstance().selectClasse(player, classeType);
+                if (joinSuccess) {
+                    player.sendMessage(ChatColor.GREEN + "Vous avez rejoint la classe " + classeType.getName() + " avec succès !");
+                } else {
+                    player.sendMessage(ChatColor.RED + " Vous ne pouvez pas rejoindre la classe " + classeType.getName());
+                }
+            } else {
+                player.sendMessage(ChatColor.RED + "La classe " + argClasse + " est introuvable.");
+            }
+        } else {
+            CommandHelper.sendHoverMessage(
+                    player,
+                    CommandHelper.formatChatMessage(ChatColor.AQUA, "Rejoindre quel classe ? TODO"),
+                    "Clique pour afficher de l'aide",
+                    String.format("/%s help", baseCommand)
+            );
+        }
     }
 
     private void argNotFound(Player player) {

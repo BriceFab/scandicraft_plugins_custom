@@ -23,4 +23,13 @@ public enum ClasseType {
     public String getName() {
         return name;
     }
+
+    public static ClasseType getClasseTypeFromString(String classeName) {
+        for (ClasseType type : values()) {
+            if (type.getName().toLowerCase().equals(classeName.toLowerCase())) {
+                return type;
+            }
+        }
+        return null;
+    }
 }

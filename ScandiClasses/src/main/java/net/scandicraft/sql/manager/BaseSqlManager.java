@@ -163,4 +163,27 @@ public abstract class BaseSqlManager implements ISqlManager {
         return sql.toString();
     }
 
+    /**
+     * Prépare une requête sql select WHERE
+     *
+     * @param whereFields where clauses
+     * @return sql query
+     */
+    public String prepareWhereSql(List<String> whereFields) {
+//        SELECT * FROM `classe` WHERE `uuid` = ?;
+        StringBuilder sql = new StringBuilder();
+        sql.append(String.format("SELECT * FROM `%s` WHERE ", this.getTable()));
+
+        for (int i = 0; i < whereFields.size(); i++) {
+            String whereField = whereFields.get(i);
+
+            boolean isFirst = (i == 0);
+            boolean isLast = (i == whereFields.size() - 1);
+
+            sql.append(String.format("`%s` = ?", whereField));
+        }
+
+        return sql.toString();
+    }
+
 }

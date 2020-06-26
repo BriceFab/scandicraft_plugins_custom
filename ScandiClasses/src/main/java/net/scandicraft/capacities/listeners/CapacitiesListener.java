@@ -1,12 +1,7 @@
 package net.scandicraft.capacities.listeners;
 
-import net.scandicraft.logs.LogManager;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.impl.*;
-import net.scandicraft.classes.ClasseType;
-import net.scandicraft.classes.Guerrier;
-import net.scandicraft.sql.manager.impl.SqlClassesManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,15 +41,8 @@ public class CapacitiesListener implements Listener {
                 ArcherCapacity1 a1 = new ArcherCapacity1();
                 ArcherCapacity2 a2 = new ArcherCapacity2();
 
-                String table = SqlClassesManager.getInstance().getTable();
-                LogManager.consoleInfo("table " + table);
-
-                boolean isSuccess = SqlClassesManager.getInstance().selectClass(player, new Guerrier());
-                if (isSuccess) {
-                    player.sendMessage(ChatColor.GREEN + "Classe " + ClasseType.GUERRIER.getName() + " choisie avec succès !");
-                } else {
-                    player.sendMessage(ChatColor.RED + "Erreur lors choix de la classe guerrière..");
-                }
+//                String table = SqlClassesManager.getInstance().getTable();
+//                LogManager.consoleInfo("table " + table);
 
 //                int raduis = 10;
 //                List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
