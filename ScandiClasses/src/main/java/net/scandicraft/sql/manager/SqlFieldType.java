@@ -3,7 +3,8 @@ package net.scandicraft.sql.manager;
 public enum SqlFieldType {
     STRING("VARCHAR"),
     INT("INT"),
-    BIGINT("BIGINT");
+    BIGINT("BIGINT"),
+    DATE("DATETIME");
 
     private final String name;
 

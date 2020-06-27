@@ -70,6 +70,10 @@ public abstract class BaseSqlManager implements ISqlManager {
                     field.isNullable() ? "NULL" : "NOT NULL"
             ));
 
+            if (field.getDefaultValue() != null) {
+                sql_fields.append(" DEFAULT ").append(field.getDefaultValue());
+            }
+
             if (!isLast) {
                 sql_fields.append(", ");
             }

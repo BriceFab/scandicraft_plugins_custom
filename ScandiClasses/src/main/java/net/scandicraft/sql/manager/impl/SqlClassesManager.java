@@ -15,6 +15,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class SqlClassesManager extends BaseSqlManager {
     public void createFieldsSchema() {
         addSqlField(new SqlField(SqlFieldType.STRING, "uuid", 255, false, SqlIndexType.UNIQUE));
         addSqlField(new SqlField(SqlFieldType.INT, "class_type", false));
-        addSqlField(new SqlField(SqlFieldType.BIGINT, "since", false));
-        addSqlField(new SqlField(SqlFieldType.BIGINT, "xp", false));
+        addSqlField(new SqlField(SqlFieldType.DATE, "since", false));
+        addSqlField(new SqlField(SqlFieldType.BIGINT, "xp", false, 0));
     }
 
     /**
@@ -56,7 +57,7 @@ public class SqlClassesManager extends BaseSqlManager {
             PreparedStatement statement = SqlManager.getInstance().getConnection().prepareStatement(sql);
             statement.setString(1, player.getUniqueId().toString());
             statement.setInt(2, classeType.getId());
-            statement.setDate(3, new Date(System.currentTimeMillis()));
+            statement.setDate(3, Date.valueOf(LocalDate.now()));
             statement.executeUpdate();
 
             return true;
@@ -84,9 +85,9 @@ public class SqlClassesManager extends BaseSqlManager {
             ResultSet result = statement.executeQuery();
             LogManager.consoleInfo("getPlayerClass" + result);
 
-            while(result.next()){
+            while (result.next()) {
                 //Retrieve by column name
-                int class_type  = result.getInt("class_type");
+                int class_type = result.getInt("class_type");
 
                 //Display values
                 LogManager.consoleInfo("class_type" + class_type);
