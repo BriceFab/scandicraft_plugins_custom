@@ -1,5 +1,6 @@
 package net.scandicraft.classes;
 
+import net.scandicraft.logs.LogManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -19,6 +20,10 @@ public class ClasseManager {
 
     public void unregisterPlayer(Player player) {
         playersClasse.remove(player.getUniqueId());
+    }
+
+    public IClasse getPlayerClasse(Player player) {
+        return playersClasse.get(player.getUniqueId());
     }
 
     public static ClasseManager getInstance() {

@@ -83,14 +83,14 @@ public class SqlClassesManager extends BaseSqlManager {
             PreparedStatement statement = SqlManager.getInstance().getConnection().prepareStatement(sql);
             statement.setString(1, player.getUniqueId().toString());
             ResultSet result = statement.executeQuery();
-            LogManager.consoleInfo("getPlayerClass" + result);
 
-            while (result.next()) {
-                //Retrieve by column name
+            if (result.next()) {
                 int class_type = result.getInt("class_type");
 
-                //Display values
-                LogManager.consoleInfo("class_type" + class_type);
+                ClasseType classeType = ClasseType.getClasseTypeFromId(class_type);
+                if (classeType != null) {
+                    return classeType.getIClasse();
+                }
             }
 
             return null;

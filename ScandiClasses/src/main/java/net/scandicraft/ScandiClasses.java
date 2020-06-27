@@ -5,6 +5,7 @@ import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.ClasseCommands;
 import net.scandicraft.commands.CommandList;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.sql.SqlManager;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
 
         IClasse playerClasse = SqlClassesManager.getInstance().getPlayerClasse(player);
         if (playerClasse != null) {
-            ClasseManager.getInstance().registerPlayer(player, null);
+            ClasseManager.getInstance().registerPlayer(player, playerClasse);
         }
     }
 

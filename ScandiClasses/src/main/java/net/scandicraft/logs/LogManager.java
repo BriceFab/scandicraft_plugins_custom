@@ -17,6 +17,10 @@ public class LogManager {
         sendConsole(ChatColor.BLUE + message);
     }
 
+    public static void consoleWarn(String message) {
+        sendConsole(ChatColor.YELLOW + message);
+    }
+
     public static void consoleError(String message) {
         sendConsole(ChatColor.RED + message);
     }

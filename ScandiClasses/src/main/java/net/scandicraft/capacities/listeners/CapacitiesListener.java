@@ -8,20 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.util.Vector;
 
 public class CapacitiesListener implements Listener {
-
-    public CapacitiesListener() {
-//        SpigotScanner clientInput = new SpigotScanner(System.in);
-
-    }
-
-    @EventHandler
-    public void onPlayerLogin(PlayerLoginEvent e) {
-        System.out.print("capacitiesListener onPlayerLogin");
-    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {

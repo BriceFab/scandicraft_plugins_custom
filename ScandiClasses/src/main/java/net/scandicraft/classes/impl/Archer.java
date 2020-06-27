@@ -1,25 +1,25 @@
 package net.scandicraft.classes.impl;
 
 import net.scandicraft.capacities.ICapacity;
-import net.scandicraft.capacities.impl.GuerrierCapacity1;
-import net.scandicraft.capacities.impl.GuerrierCapacity2;
-import net.scandicraft.capacities.impl.GuerrierCapacity3;
+import net.scandicraft.capacities.impl.ArcherCapacity1;
+import net.scandicraft.capacities.impl.ArcherCapacity2;
+import net.scandicraft.capacities.impl.ArcherCapacity3;
 import net.scandicraft.classes.ClasseType;
 import net.scandicraft.classes.IClasse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Guerrier implements IClasse {
+public class Archer implements IClasse {
     private final ArrayList<ICapacity> capacities = new ArrayList<>(Arrays.asList(
-            new GuerrierCapacity1(),
-            new GuerrierCapacity2(),
-            new GuerrierCapacity3()
+            new ArcherCapacity1(),
+            new ArcherCapacity2(),
+            new ArcherCapacity3()
     ));
 
     @Override
     public ClasseType getClassType() {
-        return ClasseType.GUERRIER;
+        return ClasseType.ARCHER;
     }
 
     @Override

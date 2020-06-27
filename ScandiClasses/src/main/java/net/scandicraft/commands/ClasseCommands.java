@@ -5,7 +5,10 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.CommandExecute;
+import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.ClasseType;
+import net.scandicraft.classes.IClasse;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -59,15 +62,21 @@ public class ClasseCommands extends CommandExecute implements Listener, CommandE
         if (args.length > 1) {
             String argClasse = args[1];
             ClasseType classeType = ClasseType.getClasseTypeFromString(argClasse);
-            if (classeType != null) {
-                boolean joinSuccess = SqlClassesManager.getInstance().selectClasse(player, classeType);
-                if (joinSuccess) {
-                    player.sendMessage(ChatColor.GREEN + "Vous avez rejoint la classe " + classeType.getName() + " avec succès !");
+            IClasse playerClasse = ClasseManager.getInstance().getPlayerClasse(player);
+            if (playerClasse == null) {
+                if (classeType != null) {
+                    boolean joinSuccess = SqlClassesManager.getInstance().selectClasse(player, classeType);
+                    if (joinSuccess) {
+                        ClasseManager.getInstance().registerPlayer(player, classeType.getIClasse());
+                        player.sendMessage(ChatColor.GREEN + "Vous avez rejoint la classe " + classeType.getName() + " avec succès !");
+                    } else {
+                        player.sendMessage(ChatColor.RED + " Vous ne pouvez pas rejoindre la classe " + classeType.getName());
+                    }
                 } else {
-                    player.sendMessage(ChatColor.RED + " Vous ne pouvez pas rejoindre la classe " + classeType.getName());
+                    player.sendMessage(ChatColor.RED + "La classe " + argClasse + " est introuvable.");
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "La classe " + argClasse + " est introuvable.");
+                player.sendMessage(ChatColor.RED + "Vous êtes déjà dans la classe " + playerClasse.getClassType().getName());
             }
         } else {
             CommandHelper.sendHoverMessage(
