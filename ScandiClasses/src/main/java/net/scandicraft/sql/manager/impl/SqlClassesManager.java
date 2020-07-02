@@ -2,7 +2,6 @@ package net.scandicraft.sql.manager.impl;
 
 import net.scandicraft.classes.ClasseType;
 import net.scandicraft.classes.IClasse;
-import net.scandicraft.logs.LogManager;
 import net.scandicraft.sql.SqlConfig;
 import net.scandicraft.sql.SqlManager;
 import net.scandicraft.sql.manager.BaseSqlManager;
@@ -78,7 +77,7 @@ public class SqlClassesManager extends BaseSqlManager {
         try {
             List<String> params = new ArrayList<>();
             params.add("uuid");             //param 1
-            String sql = prepareWhereSql(params);
+            String sql = prepareSelectWhereSql(params);
 
             PreparedStatement statement = SqlManager.getInstance().getConnection().prepareStatement(sql);
             statement.setString(1, player.getUniqueId().toString());
@@ -98,6 +97,36 @@ public class SqlClassesManager extends BaseSqlManager {
             e.printStackTrace();
 
             return null;
+        }
+    }
+
+    /**
+     * Update la classe du joueur dans la base de donnée
+     *
+     * @param player     joueur
+     * @param classeType type de classe
+     * @return success
+     */
+    public boolean changePlayerClasse(Player player, ClasseType classeType) {
+        try {
+            List<String> paramsUpdate = new ArrayList<>();
+            paramsUpdate.add("class_type");             //param 1
+
+            List<String> paramsWhere = new ArrayList<>();
+            paramsWhere.add("uuid");                    //param 2
+
+            String sql = prepareUpdateSql(paramsUpdate, paramsWhere);
+
+            PreparedStatement statement = SqlManager.getInstance().getConnection().prepareStatement(sql);
+            statement.setInt(1, classeType.getId());
+            statement.setString(2, player.getUniqueId().toString());
+            statement.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return false;
         }
     }
 

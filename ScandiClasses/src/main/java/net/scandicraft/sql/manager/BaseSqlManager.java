@@ -173,7 +173,7 @@ public abstract class BaseSqlManager implements ISqlManager {
      * @param whereFields where clauses
      * @return sql query
      */
-    public String prepareWhereSql(List<String> whereFields) {
+    public String prepareSelectWhereSql(List<String> whereFields) {
 //        SELECT * FROM `classe` WHERE `uuid` = ?;
         StringBuilder sql = new StringBuilder();
         sql.append(String.format("SELECT * FROM `%s` WHERE ", this.getTable()));
@@ -185,6 +185,48 @@ public abstract class BaseSqlManager implements ISqlManager {
             boolean isLast = (i == whereFields.size() - 1);
 
             sql.append(String.format("`%s` = ?", whereField));
+        }
+
+        return sql.toString();
+    }
+
+    /**
+     * Prépare une requête sql update WHERE
+     *
+     * @param whereFields where clauses
+     * @return sql query
+     */
+    public String prepareUpdateSql(List<String> updateFields, List<String> whereFields) {
+//      UPDATE `classe` SET `class_type`='1', `xp`='2' WHERE  `id`=17;
+        StringBuilder sql = new StringBuilder();
+        sql.append(String.format("UPDATE `%s` SET ", this.getTable()));
+
+        //Updates
+        for (int i = 0; i < updateFields.size(); i++) {
+            String updateField = updateFields.get(i);
+
+            boolean isFirst = (i == 0);
+            boolean isLast = (i == updateFields.size() - 1);
+
+            sql.append(String.format("`%s` = ?", updateField));
+        }
+
+        //Wheres
+        for (int i = 0; i < whereFields.size(); i++) {
+            String whereField = whereFields.get(i);
+
+            boolean isFirst = (i == 0);
+            boolean isLast = (i == whereFields.size() - 1);
+
+            if (isFirst) {
+                sql.append(" WHERE ");
+            }
+
+            sql.append(String.format("`%s` = ?", whereField));
+
+            if (!isLast) {
+                sql.append(" AND ");
+            }
         }
 
         return sql.toString();

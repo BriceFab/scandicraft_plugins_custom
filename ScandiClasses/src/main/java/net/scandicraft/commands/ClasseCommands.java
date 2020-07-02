@@ -6,10 +6,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_8_R3.CommandExecute;
 import net.scandicraft.classes.ClasseManager;
-import net.scandicraft.classes.ClasseType;
-import net.scandicraft.classes.IClasse;
-import net.scandicraft.logs.LogManager;
-import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,33 +51,32 @@ public class ClasseCommands extends CommandExecute implements Listener, CommandE
             case "join":
                 this.joinClasseCommand(player, args);
                 break;
+            case "change":
+                this.changeClasseCommand(player, args);
+                break;
         }
     }
 
     private void joinClasseCommand(Player player, String[] args) {
         if (args.length > 1) {
-            String argClasse = args[1];
-            ClasseType classeType = ClasseType.getClasseTypeFromString(argClasse);
-            IClasse playerClasse = ClasseManager.getInstance().getPlayerClasse(player);
-            if (playerClasse == null) {
-                if (classeType != null) {
-                    boolean joinSuccess = SqlClassesManager.getInstance().selectClasse(player, classeType);
-                    if (joinSuccess) {
-                        ClasseManager.getInstance().registerPlayer(player, classeType.getIClasse());
-                        player.sendMessage(ChatColor.GREEN + "Vous avez rejoint la classe " + classeType.getName() + " avec succès !");
-                    } else {
-                        player.sendMessage(ChatColor.RED + " Vous ne pouvez pas rejoindre la classe " + classeType.getName());
-                    }
-                } else {
-                    player.sendMessage(ChatColor.RED + "La classe " + argClasse + " est introuvable.");
-                }
-            } else {
-                player.sendMessage(ChatColor.RED + "Vous êtes déjà dans la classe " + playerClasse.getClassType().getName());
-            }
+            ClasseManager.getInstance().playerJoinClasse(player, args[1]);
         } else {
             CommandHelper.sendHoverMessage(
                     player,
                     CommandHelper.formatChatMessage(ChatColor.AQUA, "Rejoindre quel classe ? TODO"),
+                    "Clique pour afficher de l'aide",
+                    String.format("/%s help", baseCommand)
+            );
+        }
+    }
+
+    private void changeClasseCommand(Player player, String[] args) {
+        if (args.length > 1) {
+            ClasseManager.getInstance().playerChangeClasse(player, args[1]);
+        } else {
+            CommandHelper.sendHoverMessage(
+                    player,
+                    CommandHelper.formatChatMessage(ChatColor.AQUA, "Changer pour jejoindre quel classe ? TODO"),
                     "Clique pour afficher de l'aide",
                     String.format("/%s help", baseCommand)
             );
