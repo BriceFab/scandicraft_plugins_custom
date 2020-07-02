@@ -5,7 +5,6 @@ import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.ClasseCommands;
 import net.scandicraft.commands.CommandList;
-import net.scandicraft.logs.LogManager;
 import net.scandicraft.sql.SqlManager;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.Bukkit;
@@ -31,11 +30,23 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
 
         //Register commands
         getCommand(CommandList.classeCommand).setExecutor(new ClasseCommands());
+
+        //Enregistre tous les joueurs
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            IClasse playerClasse = SqlClassesManager.getInstance().getPlayerClasse(player);
+            if (playerClasse != null) {
+                ClasseManager.getInstance().registerPlayer(player, playerClasse);
+            }
+        });
     }
 
     @Override
     public void onDisable() {
+        //Ferme la connexion MySql
         SqlManager.getInstance().closeConnection();
+
+        //Desenregistre tous les joueurs
+        Bukkit.getOnlinePlayers().forEach(player -> ClasseManager.getInstance().unregisterPlayer(player));
     }
 
     @EventHandler
