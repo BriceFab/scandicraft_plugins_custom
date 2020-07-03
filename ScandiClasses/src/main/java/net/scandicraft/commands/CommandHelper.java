@@ -4,7 +4,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.scandicraft.config.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -24,6 +23,7 @@ public class CommandHelper {
     }
 
     public static String formatChatMessage(ChatColor color, String message) {
-        return String.format("%s %s%s", Config.PLUGIN_PREFIX, color, message);
+//        return String.format("%s %s%s", Config.PLUGIN_PREFIX, color, message);
+        return String.format("%s%s", color, message);
     }
 }

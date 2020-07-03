@@ -1,5 +1,7 @@
 package net.scandicraft.capacities;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.scandicraft.capacities.target.ICapacityTarget;
 import net.scandicraft.capacities.target.PlayerTarget;
 import net.scandicraft.classes.ClasseManager;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +25,7 @@ public class CapacityManager {
 
     private static final CapacityManager INSTANCE = new CapacityManager();
     private final HashMap<UUID, ICapacity> playersCurrentCapacities = new HashMap<>();
-    private final HashMap<UUID, CapacityCooldown> cooldowns = new HashMap<>();
+    private final Multimap<UUID, CapacityCooldown> cooldowns = ArrayListMultimap.create();
 
     private CapacityManager() {
     }
@@ -78,32 +81,50 @@ public class CapacityManager {
             capacity.sendSucessMessage(sender);
             capacity.onUse(sender, target);
         } else {
-            CapacityCooldown capacityCooldown = this.cooldowns.get(sender.getUniqueId());
-            capacity.sendWaitingMessage(sender, calculateRemainingTime(capacityCooldown));
+            CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
+            if (capacityCooldown != null) {
+                capacity.sendWaitingMessage(sender, calculateRemainingTime(capacityCooldown));
+            }
         }
     }
 
     /**
-     * Retourne oui/non si le player peut utiliser sa capacité
+     * Retourne oui/non si le player peut utiliser sa capacité (check cooldown)
      *
      * @param sender   joueur
      * @param capacity capacité
      * @return oui/non
      */
     private boolean canUseCapacity(Player sender, ICapacity capacity) {
-        if (this.cooldowns.containsKey(sender.getUniqueId())) {
-            CapacityCooldown capacityCooldown = this.cooldowns.get(sender.getUniqueId());
+        CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
+        if (capacityCooldown != null && this.cooldowns.containsEntry(sender.getUniqueId(), capacityCooldown)) {
 
             if (calculateRemainingTime(capacityCooldown) > 0) {
                 return false;
             } else {
-                this.cooldowns.remove(sender.getUniqueId());
+                this.cooldowns.remove(sender.getUniqueId(), capacityCooldown);
                 return true;
             }
         } else {
+            //Ne contient pas le cooldown, le joueur peut utiliser la capacité + register du cooldown
             cooldowns.put(sender.getUniqueId(), new CapacityCooldown(System.currentTimeMillis(), capacity));
             return true;
         }
+    }
+
+    private CapacityCooldown getCapacityCooldownFromKey(UUID key, ICapacity capacity) {
+        if (!this.cooldowns.containsKey(key)) {
+            return null;
+        }
+
+        Collection<CapacityCooldown> values = this.cooldowns.get(key);
+        for (CapacityCooldown capacityCooldown : values) {
+            if (capacityCooldown.getCapacity().equals(capacity)) {
+                return capacityCooldown;
+            }
+        }
+
+        return null;
     }
 
     /**

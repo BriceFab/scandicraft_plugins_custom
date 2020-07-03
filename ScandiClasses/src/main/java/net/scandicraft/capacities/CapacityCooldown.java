@@ -1,7 +1,5 @@
 package net.scandicraft.capacities;
 
-import net.scandicraft.capacities.ICapacity;
-
 public class CapacityCooldown {
 
     private final long time;

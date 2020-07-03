@@ -26,7 +26,7 @@ public class GuerrierCapacity2 extends BaseCapacity {
         if (target != null && target.getTarget() instanceof Player) {
             Player playerTarget = (Player) target.getTarget();
             sender.teleport(playerTarget.getLocation());
-            playerTarget.sendMessage(String.format("%s%s %s a utilisé la capacité %s sur vous.", ChatColor.RED, Config.PREFIX, sender.getDisplayName(), this.getName()));
+            playerTarget.sendMessage(String.format("%s %s a utilisé la capacité %s sur vous.", ChatColor.RED, sender.getDisplayName(), this.getName()));
         } else {
             sender.sendMessage("No target player");
         }

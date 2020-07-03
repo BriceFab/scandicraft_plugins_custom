@@ -26,7 +26,7 @@ public class MagicienCapacity2 extends BaseCapacity {
         if (target != null && target.getTarget() instanceof Player) {
             Player playerTarget = (Player) target.getTarget();
             playerTarget.setHealth(playerTarget.getMaxHealth());
-            playerTarget.sendMessage(String.format("%s%s %s a utilisé la capacité %s sur vous.", ChatColor.GREEN, Config.PREFIX, sender.getDisplayName(), this.getName()));
+            playerTarget.sendMessage(String.format("%s %s a utilisé la capacité %s sur vous.", ChatColor.GREEN, sender.getDisplayName(), this.getName()));
         }
     }
 }
