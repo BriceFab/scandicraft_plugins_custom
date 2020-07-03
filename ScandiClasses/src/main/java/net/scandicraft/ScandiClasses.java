@@ -1,5 +1,6 @@
 package net.scandicraft;
 
+import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.listeners.CapacitiesListener;
 import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
@@ -26,6 +27,7 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getPluginManager().registerEvents(new CapacitiesListener(), this);
 
+        //Initialise l'instance sql
         SqlManager.getInstance().init();
 
         //Register commands
@@ -53,6 +55,7 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
     public void onPlayerLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
 
+        //Si il a une classe, on l'enregistre dans le manager
         IClasse playerClasse = SqlClassesManager.getInstance().getPlayerClasse(player);
         if (playerClasse != null) {
             ClasseManager.getInstance().registerPlayer(player, playerClasse);
@@ -63,7 +66,14 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         final Player player = e.getPlayer();
 
+        //Desenregistre le joueur
         ClasseManager.getInstance().unregisterPlayer(player);
+
+        //Desenregistre la capacité sélectionnée
+        CapacityManager.getInstance().removeCurrentCapacity(player);
+
+        //Enlève tout les cooldowns qui ont expirés
+        CapacityManager.getInstance().playerRemoveAllExpiredCooldowns(player);
     }
 
     public static ScandiClasses getInstance() {

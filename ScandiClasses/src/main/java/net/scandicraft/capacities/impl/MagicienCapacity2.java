@@ -1,8 +1,7 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
-import net.scandicraft.capacities.target.ICapacityTarget;
-import net.scandicraft.config.Config;
+import net.scandicraft.capacities.utils.CapacityUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,12 +20,13 @@ public class MagicienCapacity2 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender, ICapacityTarget target) {
+    public void onUse(Player sender) {
         sender.setHealth(sender.getMaxHealth());
-        if (target != null && target.getTarget() instanceof Player) {
-            Player playerTarget = (Player) target.getTarget();
-            playerTarget.setHealth(playerTarget.getMaxHealth());
-            playerTarget.sendMessage(String.format("%s %s a utilisé la capacité %s sur vous.", ChatColor.GREEN, sender.getDisplayName(), this.getName()));
+
+        Player target = CapacityUtils.getTargetPlayer(sender, 10);
+        if (target != null) {
+            target.setHealth(target.getMaxHealth());
+            target.sendMessage(String.format("%s %s a utilisé la capacité %s sur vous.", ChatColor.GREEN, sender.getDisplayName(), this.getName()));
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
-import net.scandicraft.capacities.target.ICapacityTarget;
+import net.scandicraft.capacities.utils.CapacityUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -20,25 +20,30 @@ public class MagicienCapacity1 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender, ICapacityTarget target) {
-        Location targetLightningLocation = getLightningLocation(target);
-        if (targetLightningLocation != null) {
-            sender.getWorld().strikeLightning(targetLightningLocation);
+    public void onUse(Player sender) {
+        Player target = CapacityUtils.getTargetPlayer(sender, 10);
+        if (target != null) {
+            Location targetLightningLocation = getLightningLocation(target);
+
+            if (targetLightningLocation != null) {
+                sender.getWorld().strikeLightning(targetLightningLocation);
+            }
         }
     }
 
-    private Location getLightningLocation(ICapacityTarget target) {
+    private Location getLightningLocation(Player target) {
         if (target == null) {
             return null;
         }
 
-        Object targetObject = target.getTarget();
-        if (targetObject instanceof Player) {
-            return ((Player) targetObject).getLocation();
-        } else if (targetObject instanceof Location) {
-            return (Location) targetObject;
-        }
+//        Object targetObject = target.getTarget();
+//        if (targetObject instanceof Player) {
+//            return ((Player) targetObject).getLocation();
+//        } else if (targetObject instanceof Location) {
+//            return (Location) targetObject;
+//        }
+        return target.getLocation();
 
-        return null;
+//        return null;
     }
 }

@@ -76,21 +76,31 @@ public class ClasseManager {
     /**
      * Change la classe du joueur
      *
-     * @param player     joueur
+     * @param player    joueur
      * @param argClasse nouvelle classe
      */
     public void playerChangeClasse(Player player, String argClasse) {
         ClasseType nextClasse = ClasseType.getClasseTypeFromString(argClasse);
+        IClasse playerClasse = getPlayerClasse(player);
 
-        if (getPlayerClasse(player) != null) {
+        if (playerClasse != null) {
             //TODO Check last change time
             if (nextClasse != null) {
-                boolean changeSuccess = SqlClassesManager.getInstance().changePlayerClasse(player, nextClasse);
-                if (changeSuccess) {
-                    registerPlayerNewClasse(player, nextClasse.getIClasse());
-                    player.sendMessage(ChatColor.GREEN + "Classe changée avec succès. Bienvenu dans la classe " + nextClasse.getName());
+                if (playerClasse != nextClasse.getIClasse()) {
+                    boolean changeSuccess = SqlClassesManager.getInstance().changePlayerClasse(player, nextClasse);
+                    if (changeSuccess) {
+                        //enregistre la nouvelle classe du joueur
+                        registerPlayerNewClasse(player, nextClasse.getIClasse());
+
+                        //on reset la capacité sélectionnée du joueur
+                        CapacityManager.getInstance().removeCurrentCapacity(player);
+
+                        player.sendMessage(ChatColor.GREEN + "Classe changée avec succès. Bienvenu dans la classe " + nextClasse.getName());
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Vous n'avez pas pu changer de classe.");
+                    }
                 } else {
-                    player.sendMessage(ChatColor.RED + "Vous n'avez pas pu changer de classe.");
+                    player.sendMessage(ChatColor.RED + "Vous faites déjà parti de la classe " + playerClasse.getDisplayClasseName());
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "La classe " + argClasse + " est introuvable.");

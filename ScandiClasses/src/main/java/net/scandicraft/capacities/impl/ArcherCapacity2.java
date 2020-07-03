@@ -1,7 +1,6 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
-import net.scandicraft.capacities.target.ICapacityTarget;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +25,7 @@ public class ArcherCapacity2 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender, ICapacityTarget target) {
+    public void onUse(Player sender) {
         //même comportement que le compass
         Set<Material> transparentMaterials = new HashSet<>();
         transparentMaterials.add(Material.AIR);

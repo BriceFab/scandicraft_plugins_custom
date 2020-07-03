@@ -2,21 +2,15 @@ package net.scandicraft.capacities;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.scandicraft.capacities.target.ICapacityTarget;
-import net.scandicraft.capacities.target.PlayerTarget;
 import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.CommandList;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Gère les capacités des joueurs
@@ -38,35 +32,10 @@ public class CapacityManager {
     public void launchCapacity(Player sender) {
         ICapacity currentCapacity = getCurrentCapacity(sender);
         if (currentCapacity != null) {
-            final int raduis = 10;
-            List<Entity> playersInRadius = sender.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
-            ICapacityTarget target = new PlayerTarget((Player) getTarget(sender, playersInRadius));
-            this.useCapacity(sender, currentCapacity, target);
+            this.useCapacity(sender, currentCapacity);
         } else {
             sender.sendMessage(ChatColor.RED + "Vous n'avez pas de capacité selectionnée");
         }
-    }
-
-    public static <T extends org.bukkit.entity.Entity> T getTarget(final org.bukkit.entity.Entity entity, final Iterable<T> entities) {
-        if (entity == null)
-            return null;
-        T target = null;
-        final double threshold = 1;
-        for (final T other : entities) {
-            final Vector n = other.getLocation().toVector()
-                    .subtract(entity.getLocation().toVector());
-            if (entity.getLocation().getDirection().normalize().crossProduct(n)
-                    .lengthSquared() < threshold
-                    && n.normalize().dot(
-                    entity.getLocation().getDirection().normalize()) >= 0) {
-                if (target == null
-                        || target.getLocation().distanceSquared(
-                        entity.getLocation()) > other.getLocation()
-                        .distanceSquared(entity.getLocation()))
-                    target = other;
-            }
-        }
-        return target;
     }
 
     /**
@@ -74,12 +43,11 @@ public class CapacityManager {
      *
      * @param sender   joueur
      * @param capacity capacité
-     * @param target   la cible
      */
-    private void useCapacity(Player sender, ICapacity capacity, ICapacityTarget target) {
+    private void useCapacity(Player sender, ICapacity capacity) {
         if (canUseCapacity(sender, capacity)) {
             capacity.sendSucessMessage(sender);
-            capacity.onUse(sender, target);
+            capacity.onUse(sender);
         } else {
             CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
             if (capacityCooldown != null) {
@@ -98,7 +66,6 @@ public class CapacityManager {
     private boolean canUseCapacity(Player sender, ICapacity capacity) {
         CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
         if (capacityCooldown != null && this.cooldowns.containsEntry(sender.getUniqueId(), capacityCooldown)) {
-
             if (calculateRemainingTime(capacityCooldown) > 0) {
                 return false;
             } else {
@@ -112,6 +79,13 @@ public class CapacityManager {
         }
     }
 
+    /**
+     * Trouve le cooldown depuis l'UUID du player & en fonciton de la capacité
+     *
+     * @param key      player uuid
+     * @param capacity capacité
+     * @return le cooldown de la capacité
+     */
     private CapacityCooldown getCapacityCooldownFromKey(UUID key, ICapacity capacity) {
         if (!this.cooldowns.containsKey(key)) {
             return null;
@@ -125,6 +99,17 @@ public class CapacityManager {
         }
 
         return null;
+    }
+
+    /**
+     * Enlève tous les cooldowns qui ont expiré
+     *
+     * @param player le joueur
+     */
+    public void playerRemoveAllExpiredCooldowns(Player player) {
+        if (this.cooldowns.containsKey(player.getUniqueId())) {
+            this.cooldowns.get(player.getUniqueId()).removeIf((cooldown) -> this.calculateRemainingTime(cooldown) <= 0);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
-import net.scandicraft.capacities.target.ICapacityTarget;
+import net.scandicraft.capacities.utils.CapacityUtils;
 import org.bukkit.entity.Player;
 
 /**
@@ -19,11 +19,11 @@ public class ArcherCapacity3 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender, ICapacityTarget target) {
+    public void onUse(Player sender) {
         //TODO quand on tire une flèche
-        if (target != null && target.getTarget() instanceof Player) {
-            Player playerTarget = (Player) target.getTarget();
-            playerTarget.setHealth(playerTarget.getHealth() / 2);
+        Player target = CapacityUtils.getTargetPlayer(sender, 10);
+        if (target != null) {
+            target.setHealth(target.getHealth() / 2);
         }
     }
 }

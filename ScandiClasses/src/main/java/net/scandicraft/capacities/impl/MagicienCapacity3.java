@@ -1,7 +1,6 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
-import net.scandicraft.capacities.target.ICapacityTarget;
 import net.scandicraft.logs.LogManager;
 import org.bukkit.entity.Player;
 
@@ -20,7 +19,7 @@ public class MagicienCapacity3 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender, ICapacityTarget target) {
+    public void onUse(Player sender) {
         LogManager.consoleWarn(getName() + " a implémenter..");
     }
 }
