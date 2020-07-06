@@ -1,5 +1,6 @@
 package net.scandicraft.capacities;
 
+import net.scandicraft.capacities.exception.CapacityException;
 import org.bukkit.entity.Player;
 
 public interface ICapacity {
@@ -23,7 +24,7 @@ public interface ICapacity {
      *
      * @param sender player qui utilise la capacité
      */
-    void onUse(Player sender);
+    void onUse(Player sender) throws CapacityException;
 
     /**
      * Message success après l'utilisation de la capacité

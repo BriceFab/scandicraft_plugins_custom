@@ -2,6 +2,7 @@ package net.scandicraft.capacities;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.scandicraft.capacities.exception.CapacityException;
 import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.CommandList;
@@ -45,36 +46,40 @@ public class CapacityManager {
      * @param capacity capacité
      */
     private void useCapacity(Player sender, ICapacity capacity) {
-        if (canUseCapacity(sender, capacity)) {
-            capacity.sendSucessMessage(sender);
-            capacity.onUse(sender);
-        } else {
-            CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
-            if (capacityCooldown != null) {
-                capacity.sendWaitingMessage(sender, calculateRemainingTime(capacityCooldown));
+        CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
+
+        //Test si le joueur peut utiliser sa capacité
+        if (canUseCapacity(capacityCooldown, sender)) {
+            try {
+                //Utilise la capacité
+                capacity.onUse(sender);
+
+                //Enregistre le cooldown pour la prochaine utilisation
+                cooldowns.remove(sender.getUniqueId(), capacityCooldown);
+                cooldowns.put(sender.getUniqueId(), new CapacityCooldown(System.currentTimeMillis(), capacity));
+
+                //A utilisé la capacité avec succès
+                capacity.sendSucessMessage(sender);
+            } catch (CapacityException e) {
+                //Une erreur est survenue, annule la capacité
+                sender.sendMessage(e.getPlayerErrorMessage());
             }
+        } else {
+            //Affiche le message du cooldown
+            capacity.sendWaitingMessage(sender, calculateRemainingTime(capacityCooldown));
         }
     }
 
     /**
      * Retourne oui/non si le player peut utiliser sa capacité (check cooldown)
      *
-     * @param sender   joueur
-     * @param capacity capacité
+     * @param sender joueur
      * @return oui/non
      */
-    private boolean canUseCapacity(Player sender, ICapacity capacity) {
-        CapacityCooldown capacityCooldown = getCapacityCooldownFromKey(sender.getUniqueId(), capacity);
+    private boolean canUseCapacity(CapacityCooldown capacityCooldown, Player sender) {
         if (capacityCooldown != null && this.cooldowns.containsEntry(sender.getUniqueId(), capacityCooldown)) {
-            if (calculateRemainingTime(capacityCooldown) > 0) {
-                return false;
-            } else {
-                this.cooldowns.remove(sender.getUniqueId(), capacityCooldown);
-                return true;
-            }
+            return calculateRemainingTime(capacityCooldown) <= 0;
         } else {
-            //Ne contient pas le cooldown, le joueur peut utiliser la capacité + register du cooldown
-            cooldowns.put(sender.getUniqueId(), new CapacityCooldown(System.currentTimeMillis(), capacity));
             return true;
         }
     }
