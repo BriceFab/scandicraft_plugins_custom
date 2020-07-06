@@ -1,6 +1,7 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
+import net.scandicraft.config.ClassesConfig;
 import net.scandicraft.utils.MathUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -12,19 +13,19 @@ import org.bukkit.potion.PotionEffectType;
 public class GuerrierCapacity3 extends BaseCapacity {
     @Override
     public String getName() {
-        return "GuerrierCapacity3";
+        return "fuyard";
     }
 
     @Override
     public int getCooldownTime() {
-        return 3 * 60;  //3 mn
+        return ClassesConfig.COOLDOWN_CAPACITY_3;
     }
 
     @Override
     public void onUse(Player sender) {
         sender.removePotionEffect(PotionEffectType.SPEED);
         sender.removePotionEffect(PotionEffectType.ABSORPTION);
-        sender.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, MathUtils.convertSecondsToTicks(8), 2));
+        sender.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, MathUtils.convertSecondsToTicks(5), 2));
         sender.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, MathUtils.convertSecondsToTicks(30), 2));
     }
 }

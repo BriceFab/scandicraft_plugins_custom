@@ -18,4 +18,6 @@ public class CapacityException extends Exception {
     public String getPlayerErrorMessage() {
         return ChatColor.RED + playerErrorMessage;
     }
+
+    public static String NO_TARGET_PLAYER = "Aucun joueur visé.";
 }

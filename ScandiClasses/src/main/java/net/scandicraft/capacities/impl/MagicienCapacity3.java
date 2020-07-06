@@ -1,21 +1,22 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
+import net.scandicraft.config.ClassesConfig;
 import net.scandicraft.logs.LogManager;
 import org.bukkit.entity.Player;
 
 /**
- * téléporte lui et le joueur visé dans une arène PvP
+ * téléporte lui et le joueur visé dans une arène PvP pendant 1 minute
  */
 public class MagicienCapacity3 extends BaseCapacity {
     @Override
     public String getName() {
-        return "MagicienCapacity3";
+        return "combattant";
     }
 
     @Override
     public int getCooldownTime() {
-        return 3 * 60;  //3 mn
+        return ClassesConfig.COOLDOWN_CAPACITY_3;
     }
 
     @Override

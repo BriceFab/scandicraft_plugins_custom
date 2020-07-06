@@ -3,6 +3,8 @@ package net.scandicraft.capacities.impl;
 import net.scandicraft.capacities.BaseCapacity;
 import net.scandicraft.capacities.exception.CapacityException;
 import net.scandicraft.capacities.utils.CapacityUtils;
+import net.scandicraft.config.CapacitiesConfig;
+import net.scandicraft.config.ClassesConfig;
 import org.bukkit.entity.Player;
 
 /**
@@ -11,22 +13,22 @@ import org.bukkit.entity.Player;
 public class ArcherCapacity3 extends BaseCapacity {
     @Override
     public String getName() {
-        return "ArcherCapacity3";
+        return "flèche sanglante";
     }
 
     @Override
     public int getCooldownTime() {
-        return 3 * 60;  //3m
+        return ClassesConfig.COOLDOWN_CAPACITY_3;
     }
 
     @Override
     public void onUse(Player sender) throws CapacityException {
         //TODO quand on tire une flèche
-        Player target = CapacityUtils.getTargetPlayer(sender, 10);
+        Player target = CapacityUtils.getTargetPlayer(sender, CapacitiesConfig.MAX_TARGET_DISTANCE);
         if (target != null) {
             target.setHealth(target.getHealth() / 2);
         } else {
-            throw new CapacityException("no target found", "Aucun joueur visé");
+            throw new CapacityException("no target found", CapacityException.NO_TARGET_PLAYER);
         }
     }
 }

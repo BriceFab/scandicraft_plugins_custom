@@ -1,28 +1,29 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
+import net.scandicraft.config.ClassesConfig;
 import net.scandicraft.utils.MathUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * Capacité 1: donne 10 secondes de force II
+ * Capacité 1: donne 5 secondes de force III
  */
 public class GuerrierCapacity1 extends BaseCapacity {
     @Override
     public String getName() {
-        return "GuerrierCapacity1";
+        return "épée sanglante";
     }
 
     @Override
     public void onUse(Player sender) {
-        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(10), 1));
+        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(5), 2));
     }
 
     @Override
     public int getCooldownTime() {
-        return 30;    //30 secondes
+        return ClassesConfig.COOLDOWN_CAPACITY_1;
     }
 
 }

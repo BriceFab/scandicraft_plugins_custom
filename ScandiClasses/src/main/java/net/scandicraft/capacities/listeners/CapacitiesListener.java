@@ -12,10 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
 
 import java.util.List;
-import java.util.Random;
 
 public class CapacitiesListener implements Listener {
 
@@ -55,55 +53,58 @@ public class CapacitiesListener implements Listener {
 //                CapacityManager.getInstance().useCapacity(player, a2, null);
 //                }
             } else if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
-                //Change la capacité sélectionnée
-                IClasse playerclasse = ClasseManager.getInstance().getPlayerClasse(player);
-
-                if (playerclasse == null) {
-                    player.sendMessage(ChatColor.RED + "Vous devez avoir une classe pour sélectionner votre capacité.");
-                    return;
-                }
-
-                List<ICapacity> playerCapacites = playerclasse.getCapacities();
-                ICapacity nextCapacity = playerCapacites.get(new Random().nextInt(playerCapacites.size()));
-                CapacityManager.getInstance().changeCurrentCapacity(player, nextCapacity);
-                player.sendMessage(ChatColor.GREEN + "Vous avez sélectionner la capacité " + nextCapacity.getName());
+                this.changeCurrentCapacity(player);
             }
         }
     }
 
-    public static <T extends org.bukkit.entity.Entity> T getTarget(final org.bukkit.entity.Entity entity, final Iterable<T> entities) {
-        if (entity == null)
-            return null;
-        T target = null;
-        final double threshold = 1;
-        for (final T other : entities) {
-            final Vector n = other.getLocation().toVector()
-                    .subtract(entity.getLocation().toVector());
-            if (entity.getLocation().getDirection().normalize().crossProduct(n)
-                    .lengthSquared() < threshold
-                    && n.normalize().dot(
-                    entity.getLocation().getDirection().normalize()) >= 0) {
-                if (target == null
-                        || target.getLocation().distanceSquared(
-                        entity.getLocation()) > other.getLocation()
-                        .distanceSquared(entity.getLocation()))
-                    target = other;
-            }
+    /**
+     * Change la capacité sélectionnée du joueur
+     *
+     * @param player player
+     */
+    private void changeCurrentCapacity(Player player) {
+        IClasse playerClasse = ClasseManager.getInstance().getPlayerClasse(player);
+
+        //Contrôle la classe du joueur
+        if (playerClasse == null) {
+            player.sendMessage(ChatColor.RED + "Vous devez avoir une classe pour sélectionner votre capacité.");
+            return;
         }
-        return target;
+
+        //La prochaine capacité dans la sélection du joueur
+        ICapacity nextCapacity = this.getNextCapacity(player, playerClasse);
+
+        //Sélectionne la nouvelle capacité
+        CapacityManager.getInstance().changeCurrentCapacity(player, nextCapacity);
+        player.sendMessage(ChatColor.GREEN + "Vous avez sélectionné la capacité " + ChatColor.BOLD + nextCapacity.getName() + ChatColor.RESET + ChatColor.GREEN + " (" + (playerClasse.getCapacities().indexOf(nextCapacity) + 1) + ")");
     }
 
-//    public static Player getTargetPlayer(final Player fromPlayer, int raduis) {
-//        List<Entity> playersInRadius = fromPlayer.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
-//        for (Entity target : playersInRadius) {
-//            if (target instanceof Player) {
-//                if (fromPlayer.hasLineOfSight(target)) {
-//                    //TODO calculer le joueur le plus proche ?
-//                    return (Player) target;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    /**
+     * Trouve la prochaine capacité du joueur sans sa sélection
+     *
+     * @param playerClasse classe du joueur
+     * @return prochaine capacité
+     */
+    private ICapacity getNextCapacity(Player player, IClasse playerClasse) {
+        //Capacités de la classe du joueur
+        List<ICapacity> playerCapacites = playerClasse.getCapacities();
+
+        //Capacité sélectionne par le joueur
+        ICapacity currentCapacity = CapacityManager.getInstance().getCurrentCapacity(player);
+
+        //Si pas de capacité sélectionne, retourne la 1ère
+        if (currentCapacity == null) {
+            return playerCapacites.get(0);
+        }
+
+        //Sinon prend la prochaine
+        int currentCapacityIndex = playerCapacites.indexOf(currentCapacity);
+        if (currentCapacityIndex + 1 < playerCapacites.size()) {
+            return playerCapacites.get(currentCapacityIndex + 1);
+        } else {
+            return playerCapacites.get(0);
+        }
+    }
 
 }

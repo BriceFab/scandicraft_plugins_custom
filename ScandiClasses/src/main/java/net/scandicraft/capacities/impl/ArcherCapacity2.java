@@ -1,6 +1,8 @@
 package net.scandicraft.capacities.impl;
 
 import net.scandicraft.capacities.BaseCapacity;
+import net.scandicraft.config.CapacitiesConfig;
+import net.scandicraft.config.ClassesConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,12 +18,12 @@ public class ArcherCapacity2 extends BaseCapacity {
 
     @Override
     public String getName() {
-        return "ArcherCapacity2";
+        return "téléportation archer";
     }
 
     @Override
     public int getCooldownTime() {
-        return 0; //30s
+        return ClassesConfig.COOLDOWN_CAPACITY_2;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class ArcherCapacity2 extends BaseCapacity {
         //même comportement que le compass
         Set<Material> transparentMaterials = new HashSet<>();
         transparentMaterials.add(Material.AIR);
-        Block targetBlock = sender.getTargetBlock(transparentMaterials, 20);
+        Block targetBlock = sender.getTargetBlock(transparentMaterials, CapacitiesConfig.MAX_TARGET_DISTANCE);
 
         if (targetBlock != null && targetBlock.getType() != Material.AIR) {
             Location targetLocation = targetBlock.getLocation();
