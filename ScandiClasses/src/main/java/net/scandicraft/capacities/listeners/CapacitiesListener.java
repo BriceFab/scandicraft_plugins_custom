@@ -2,7 +2,6 @@ package net.scandicraft.capacities.listeners;
 
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.capacities.ICapacity;
-import net.scandicraft.capacities.impl.*;
 import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import org.bukkit.ChatColor;
@@ -30,29 +29,8 @@ public class CapacitiesListener implements Listener {
         }
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getItemInHand().getType() == Material.SLIME_BALL) {
-                //Lance la capacité du joueur
-                GuerrierCapacity1 g1 = new GuerrierCapacity1();
-                GuerrierCapacity3 g3 = new GuerrierCapacity3();
-                MagicienCapacity2 m2 = new MagicienCapacity2(); //TODO target PLAYER
-                GuerrierCapacity2 g2 = new GuerrierCapacity2();
-                ArcherCapacity3 a3 = new ArcherCapacity3();
-                MagicienCapacity1 m1 = new MagicienCapacity1();
-                ArcherCapacity1 a1 = new ArcherCapacity1();
-                ArcherCapacity2 a2 = new ArcherCapacity2();
-
-//                String table = SqlClassesManager.getInstance().getTable();
-//                LogManager.consoleInfo("table " + table);
-
-//                int raduis = 10;
-//                List<Entity> playersInRadius = player.getNearbyEntities(raduis, raduis, raduis).stream().filter(entity -> (entity instanceof Player)).collect(Collectors.toList());
-//                ICapacityTarget target = new PlayerTarget((Player) getTarget(player, playersInRadius));
-//                if (target.getTarget() == null) {
-//                    player.sendMessage(ChatColor.RED + " no target");
-//                } else {
-//                CapacityManager.getInstance().useCapacity(player, a2, null);
-//                }
-            } else if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
+            if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
+                //Change la capacité sélectionnée du joueur
                 this.changeCurrentCapacity(player);
             }
         }
