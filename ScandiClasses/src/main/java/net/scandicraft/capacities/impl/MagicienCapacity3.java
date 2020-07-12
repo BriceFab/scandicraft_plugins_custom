@@ -20,6 +20,11 @@ public class MagicienCapacity3 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "MagicienCapacity3";
+    }
+
+    @Override
     public void onUse(Player sender) {
         LogManager.consoleWarn(getName() + " a implémenter..");
     }

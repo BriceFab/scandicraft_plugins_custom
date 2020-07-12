@@ -23,6 +23,11 @@ public class MagicienCapacity2 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "MagicienCapacity2";
+    }
+
+    @Override
     public void onUse(Player sender) throws CapacityException {
         sender.setHealth(sender.getMaxHealth());
 

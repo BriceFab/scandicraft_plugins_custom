@@ -24,6 +24,11 @@ public class GuerrierCapacity2 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "GuerrierCapacity2";
+    }
+
+    @Override
     public void onUse(Player sender) throws CapacityException {
         //TODO check target here
         Player target = CapacityUtils.getTargetPlayer(sender, CapacitiesConfig.MAX_TARGET_DISTANCE);

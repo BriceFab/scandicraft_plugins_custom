@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -174,6 +175,55 @@ public class CapacityManager {
      */
     public void removeCurrentCapacity(Player player) {
         this.playersCurrentCapacities.remove(player.getUniqueId());
+    }
+
+    /**
+     * Change la capacité sélectionnée du joueur par la suivante de la liste
+     *
+     * @param player player
+     */
+    public void selectNextCapacity(Player player) {
+        IClasse playerClasse = ClasseManager.getInstance().getPlayerClasse(player);
+
+        //Contrôle la classe du joueur
+        if (playerClasse == null) {
+            player.sendMessage(ChatColor.RED + "Vous devez avoir une classe pour sélectionner votre capacité.");
+            return;
+        }
+
+        //La prochaine capacité dans la sélection du joueur
+        ICapacity nextCapacity = this.getNextCapacity(player, playerClasse);
+
+        //Sélectionne la nouvelle capacité
+        this.changeCurrentCapacity(player, nextCapacity);
+        player.sendMessage(ChatColor.GREEN + "Vous avez sélectionné la capacité " + ChatColor.BOLD + nextCapacity.getName() + ChatColor.RESET + ChatColor.GREEN + " (" + (playerClasse.getCapacities().indexOf(nextCapacity) + 1) + ")");
+    }
+
+    /**
+     * Trouve la prochaine capacité du joueur dans sa sélection
+     *
+     * @param playerClasse classe du joueur
+     * @return prochaine capacité
+     */
+    private ICapacity getNextCapacity(Player player, IClasse playerClasse) {
+        //Capacités de la classe du joueur
+        List<ICapacity> playerCapacites = playerClasse.getCapacities();
+
+        //Capacité sélectionne par le joueur
+        ICapacity currentCapacity = this.getCurrentCapacity(player);
+
+        //Si pas de capacité sélectionne, retourne la 1ère
+        if (currentCapacity == null) {
+            return playerCapacites.get(0);
+        }
+
+        //Sinon prend la prochaine
+        int currentCapacityIndex = playerCapacites.indexOf(currentCapacity);
+        if (currentCapacityIndex + 1 < playerCapacites.size()) {
+            return playerCapacites.get(currentCapacityIndex + 1);
+        } else {
+            return playerCapacites.get(0);
+        }
     }
 
     public static CapacityManager getInstance() {

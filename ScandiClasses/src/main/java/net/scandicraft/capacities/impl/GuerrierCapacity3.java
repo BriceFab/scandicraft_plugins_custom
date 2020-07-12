@@ -22,6 +22,11 @@ public class GuerrierCapacity3 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "GuerrierCapacity3";
+    }
+
+    @Override
     public void onUse(Player sender) {
         sender.removePotionEffect(PotionEffectType.SPEED);
         sender.removePotionEffect(PotionEffectType.ABSORPTION);

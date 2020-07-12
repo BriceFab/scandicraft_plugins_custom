@@ -27,6 +27,11 @@ public class ArcherCapacity2 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "ArcherCapacity2";
+    }
+
+    @Override
     public void onUse(Player sender) {
         //même comportement que le compass
         Set<Material> transparentMaterials = new HashSet<>();

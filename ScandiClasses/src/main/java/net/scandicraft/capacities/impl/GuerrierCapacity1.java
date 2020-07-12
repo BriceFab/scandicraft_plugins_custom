@@ -17,13 +17,18 @@ public class GuerrierCapacity1 extends BaseCapacity {
     }
 
     @Override
-    public void onUse(Player sender) {
-        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(5), 2));
+    public int getCooldownTime() {
+        return ClassesConfig.COOLDOWN_CAPACITY_1;
     }
 
     @Override
-    public int getCooldownTime() {
-        return ClassesConfig.COOLDOWN_CAPACITY_1;
+    public String getUniqueIdentifier() {
+        return "GuerrierCapacity1";
+    }
+
+    @Override
+    public void onUse(Player sender) {
+        sender.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, MathUtils.convertSecondsToTicks(5), 2));
     }
 
 }

@@ -6,6 +6,7 @@ import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.ClasseCommands;
 import net.scandicraft.commands.CommandList;
+import net.scandicraft.packets.CustomPacketManager;
 import net.scandicraft.sql.SqlManager;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.Bukkit;
@@ -40,6 +41,9 @@ public final class ScandiClasses extends JavaPlugin implements Listener {
                 ClasseManager.getInstance().registerPlayer(player, playerClasse);
             }
         });
+
+        //Register les packets
+        CustomPacketManager.registerPackets();
     }
 
     @Override

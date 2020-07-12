@@ -25,6 +25,11 @@ public class ArcherCapacity1 extends BaseCapacity {
     }
 
     @Override
+    public String getUniqueIdentifier() {
+        return "ArcherCapacity1";
+    }
+
+    @Override
     public void onUse(Player sender) throws CapacityException {
         Player target = CapacityUtils.getTargetPlayer(sender, CapacitiesConfig.MAX_TARGET_DISTANCE);
         if (target != null) {
