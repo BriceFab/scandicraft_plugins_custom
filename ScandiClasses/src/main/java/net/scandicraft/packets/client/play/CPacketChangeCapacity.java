@@ -1,9 +1,10 @@
-package net.scandicraft.packets.client;
+package net.scandicraft.packets.client.play;
 
 import net.minecraft.server.v1_8_R3.PacketDataSerializer;
 import net.minecraft.server.v1_8_R3.PacketListener;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.logs.LogManager;
+import net.scandicraft.packets.client.CPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

@@ -6,7 +6,9 @@ import net.scandicraft.capacities.exception.CapacityException;
 import net.scandicraft.classes.ClasseManager;
 import net.scandicraft.classes.IClasse;
 import net.scandicraft.commands.CommandList;
+import net.scandicraft.packets.server.play.SPacketCurrentCapacity;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -151,10 +153,16 @@ public class CapacityManager {
             return;
         }
 
+        //Enregistre le changement de capacité
         if (this.playersCurrentCapacities.containsKey(player.getUniqueId())) {
             this.playersCurrentCapacities.replace(player.getUniqueId(), capacity);
         } else {
             this.playersCurrentCapacities.put(player.getUniqueId(), capacity);
+        }
+
+        //Envoie de l'information au client
+        if (player.isOnline()) {
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new SPacketCurrentCapacity(capacity));
         }
     }
 

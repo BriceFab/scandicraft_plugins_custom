@@ -11,8 +11,9 @@ import com.google.common.collect.BiMap;
 import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
-import net.scandicraft.packets.client.CPacketChangeCapacity;
+import net.scandicraft.packets.client.play.CPacketChangeCapacity;
 import net.scandicraft.packets.server.SPacket;
+import net.scandicraft.packets.server.play.SPacketCurrentCapacity;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,6 +26,7 @@ public class CustomPacketManager {
 
     public static void registerPackets() {
         registerPacket(CPacketChangeCapacity.class, PacketsID.CPacketChangeCapacity, Sender.CLIENT, EnumProtocol.PLAY);
+        registerPacket(SPacketCurrentCapacity.class, PacketsID.SPacketCurrentCapacity, Sender.SERVER, EnumProtocol.PLAY);
     }
 
     public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender, EnumProtocol protocol) {
