@@ -16,14 +16,14 @@ public class CapacitiesListener implements Listener {
         Action action = event.getAction();
 
         if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-            if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
+            if (player.getItemInHand().getType() == Material.SCEPTER_CAPACITY) {
                 //Utilise sa capacité sélectionnée
                 CapacityManager.getInstance().launchCapacity(player);
             }
         }
 
         if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getItemInHand().getType() == Material.BLAZE_ROD) {
+            if (player.getItemInHand().getType() == Material.SCEPTER_CAPACITY) {
                 //Change la capacité sélectionnée du joueur
                 CapacityManager.getInstance().selectNextCapacity(player);
             }
