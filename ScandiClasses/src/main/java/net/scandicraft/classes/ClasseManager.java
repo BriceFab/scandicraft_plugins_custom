@@ -1,10 +1,15 @@
 package net.scandicraft.classes;
 
+import net.scandicraft.ScandiClasses;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.commands.CommandList;
+import net.scandicraft.logs.LogManager;
+import net.scandicraft.packets.server.play.SPacketCurrentClasse;
 import net.scandicraft.sql.manager.impl.SqlClassesManager;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -26,6 +31,17 @@ public class ClasseManager {
 
         //Sélectionne la 1ère capacité du joueur
         CapacityManager.getInstance().changeCurrentCapacity(player, classe.getCapacities().get(0));
+
+        //Envoie de l'information au client
+        //attends 3 secondes que le joueur soit connecté
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (player.isOnline()) {
+                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new SPacketCurrentClasse(classe));
+                }
+            }
+        }.runTaskLater(ScandiClasses.getInstance(), 3);
     }
 
     public void unregisterPlayer(Player player) {
@@ -61,6 +77,7 @@ public class ClasseManager {
                 boolean joinSuccess = SqlClassesManager.getInstance().selectClasse(player, classeType);
                 if (joinSuccess) {
                     registerPlayer(player, classeType.getIClasse());
+
                     player.sendMessage(ChatColor.GREEN + "Vous avez rejoint la classe " + classeType.getName() + " avec succès !");
                 } else {
                     player.sendMessage(ChatColor.RED + "Vous ne pouvez pas rejoindre la classe " + classeType.getName());
@@ -94,6 +111,14 @@ public class ClasseManager {
 
                         //on reset la capacité sélectionnée du joueur
                         CapacityManager.getInstance().removeCurrentCapacity(player);
+
+                        //Sélectionne la 1ère capacité du joueur
+                        CapacityManager.getInstance().changeCurrentCapacity(player, nextClasse.getIClasse().getCapacities().get(0));
+
+                        //Envoie de l'information au client
+                        if (player.isOnline()) {
+                            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new SPacketCurrentClasse(nextClasse.getIClasse()));
+                        }
 
                         player.sendMessage(ChatColor.GREEN + "Classe changée avec succès. Bienvenu dans la classe " + nextClasse.getName());
                     } else {

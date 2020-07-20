@@ -6,6 +6,9 @@ import net.scandicraft.packets.server.SPacket;
 
 import java.io.IOException;
 
+/**
+ * Packet qui informe le client de la capacité actuelle
+ */
 public class SPacketCurrentCapacity extends SPacket {
     private ICapacity currentCapactiy = null;
 
