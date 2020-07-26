@@ -20,6 +20,13 @@ public class HTTPClient {
 
     private final Header[] headers;
 
+    public HTTPClient() {
+        this.headers = new Header[]{
+                new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"),
+                new BasicHeader(HttpHeaders.ACCEPT, "application/json"),
+        };
+    }
+
     public HTTPClient(final String api_token) {
         this.headers = new Header[]{
                 new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"),

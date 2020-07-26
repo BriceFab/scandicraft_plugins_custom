@@ -6,6 +6,7 @@ import net.scandicraft.http.HTTPEndpoints;
 import net.scandicraft.http.HTTPReply;
 import net.scandicraft.http.HttpStatus;
 import net.scandicraft.http.entity.VerifyTokenEntity;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.packetListeners.ProtocolLibManager;
 import net.scandicraft.packets.CustomPacketManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
@@ -46,6 +47,8 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
     public void onPlayerLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
 
+        LogManager.consoleInfo("Receive connection for " + player.getName() + " start checking");
+
         String[] hostname = e.getHostname().split(":")[0].split("\0");
         boolean isUsingClient = false;
 
@@ -63,10 +66,12 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
                             isUsingClient = true;
                         }
                     } else {
+                        LogManager.consoleError("Refuse connection for " + player.getName() + " (http error)");
                         e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: " + httpReply.getJsonResponse().get("error"));
                         return;
                     }
                 } catch (Exception exception) {
+                    LogManager.consoleError("Refuse connection for " + player.getName() + " (auth error)");
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur lors de l'authentification");
                     return;
                 }
@@ -74,8 +79,10 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
         }
 
         if (!isUsingClient) {
+            LogManager.consoleError("Refuse connection for " + player.getName() + " (not using client)");
             e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !");
         } else {
+            LogManager.consoleSuccess("Accept connection for " + player.getName());
             new BukkitRunnable() {
                 @Override
                 public void run() {
