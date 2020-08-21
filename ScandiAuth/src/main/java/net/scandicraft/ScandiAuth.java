@@ -55,8 +55,22 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
         if (hostname.length == 2) {
             if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
                 try {
-                    VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), CPacketAuthToken.token);
-                    HTTPClient httpClient = new HTTPClient(CPacketAuthToken.token);
+                    Thread.sleep(2000); //attends 2 secondes le token
+                    final String token = CPacketAuthToken.token;
+                    LogManager.consoleWarn("token " + token);
+                    synchronized (token) {
+                        token.wait(2000);
+                        LogManager.consoleWarn("sychronized token ok");
+                    }
+
+                    if (token == null || token.equals("") || token.length() <= 0) {
+                        LogManager.consoleError("Refuse connection for " + player.getName() + " (no token)");
+                        e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: aucun token");
+                        return;
+                    }
+
+                    VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), token);
+                    HTTPClient httpClient = new HTTPClient(token);
                     HTTPReply httpReply = httpClient.post(HTTPEndpoints.VERIFY_TOKEN, entity);
 //                    getLogger().info("VerifyToken Response: " + httpReply.getStatusCode() + " - " + httpReply.getJsonResponse());
 
@@ -73,6 +87,7 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
                 } catch (Exception exception) {
                     LogManager.consoleError("Refuse connection for " + player.getName() + " (auth error)");
                     e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur lors de l'authentification");
+                    exception.printStackTrace();
                     return;
                 }
             }

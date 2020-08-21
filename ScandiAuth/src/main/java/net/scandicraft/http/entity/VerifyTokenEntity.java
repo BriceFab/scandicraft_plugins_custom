@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName;
 public class VerifyTokenEntity {
 
     @SerializedName("username")
-    private String name;
+    private final String name;
 
-    private String uuid;
+    private final String uuid;
 
-    private String token;
+    private final String token;
 
     public VerifyTokenEntity(String name, String uuid, String token) {
         this.name = name;
