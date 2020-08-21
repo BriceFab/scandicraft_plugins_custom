@@ -55,12 +55,10 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
         if (hostname.length == 2) {
             if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
                 try {
-                    Thread.sleep(2000); //attends 2 secondes le token
+//                    Thread.sleep(2000); //attends 2 secondes le token
                     final String token = CPacketAuthToken.token;
-                    LogManager.consoleWarn("token " + token);
                     synchronized (token) {
                         token.wait(2000);
-                        LogManager.consoleWarn("sychronized token ok");
                     }
 
                     if (token == null || token.equals("") || token.length() <= 0) {

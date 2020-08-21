@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.scandicraft.ScandiAuth;
+import net.scandicraft.logs.LogManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
 import net.scandicraft.packets.server.SPacket;
 import org.bukkit.entity.Player;
@@ -47,7 +48,6 @@ public class CustomPacketManager {
 
         Map<Class<?>, EnumProtocol> map = (Map<Class<?>, EnumProtocol>) Accessors.getFieldAccessor(EnumProtocol.class, Map.class, true).get("protocol");
         map.put(packetClass, protocol);
-
     }
 
     public static void sendCustomPacket(Player player, SPacket packet) {
