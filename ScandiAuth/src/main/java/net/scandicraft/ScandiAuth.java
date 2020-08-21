@@ -1,17 +1,12 @@
 package net.scandicraft;
 
 import net.scandicraft.config.Config;
-import net.scandicraft.config.ScandiCraftMultiplayer;
-import net.scandicraft.http.HTTPClient;
-import net.scandicraft.http.HTTPEndpoints;
-import net.scandicraft.http.HTTPReply;
-import net.scandicraft.http.HttpStatus;
-import net.scandicraft.http.entity.VerifyTokenEntity;
 import net.scandicraft.logs.LogManager;
 import net.scandicraft.packetListeners.PacketsListener;
 import net.scandicraft.packetListeners.ProtocolLibManager;
 import net.scandicraft.packets.CustomPacketManager;
-import net.scandicraft.packets.client.CPacketAuthToken;
+import net.scandicraft.tasks.VerifyClientResponse;
+import net.scandicraft.tasks.VerifyClientTask;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,6 +21,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public final class ScandiAuth extends JavaPlugin implements Listener {
 
@@ -49,63 +47,39 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerLogin(PlayerLoginEvent e) {
         final Player player = e.getPlayer();
+        final String hostname = e.getHostname();
+        final long start_task_time = System.currentTimeMillis();
 
-        LogManager.consoleInfo("Receive connection for " + player.getName() + " start checking");
+        try {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<VerifyClientResponse> verifyClientTask = executorService.submit(new VerifyClientTask(player, hostname));
 
-        String[] hostname = e.getHostname().split(":")[0].split("\0");
-        boolean isUsingClient = false;
+            VerifyClientResponse verifyClientResponse = verifyClientTask.get();
+            final boolean isUsingClient = verifyClientResponse.isUsingClient();
+            final String message = verifyClientResponse.getMessage();
 
-        if (hostname.length == 2) {
-            if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
-                try {
-//                    Thread.sleep(2000); //attends 2 secondes le token
-                    final String token = CPacketAuthToken.token;
-                    synchronized (token) {
-                        token.wait(2000);
+            if (isUsingClient) {
+                e.allow();
+
+                final long result_task_time = System.currentTimeMillis() - start_task_time;
+                LogManager.consoleSuccess(String.format("Accept connection for %s in %d ms", player.getName(), result_task_time));
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        playersUsingClient.add(player.getUniqueId());
+                        player.sendMessage(ChatColor.GREEN + String.format(message, result_task_time));
                     }
-
-                    if (token == null || token.equals("") || token.length() <= 0) {
-                        LogManager.consoleError("Refuse connection for " + player.getName() + " (no token)");
-                        e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: aucun token");
-                        return;
-                    }
-
-                    VerifyTokenEntity entity = new VerifyTokenEntity(player.getName(), player.getUniqueId().toString(), token);
-                    HTTPClient httpClient = new HTTPClient(token);
-                    HTTPReply httpReply = httpClient.post(HTTPEndpoints.VERIFY_TOKEN, entity);
-//                    getLogger().info("VerifyToken Response: " + httpReply.getStatusCode() + " - " + httpReply.getJsonResponse());
-
-                    //Http traitement de la réponse
-                    if (httpReply.getStatusCode() == HttpStatus.HTTP_OK) {
-                        if (httpReply.getJsonResponse().get("username").getAsString().equals(player.getName()) && httpReply.getJsonResponse().get("uuid").getAsString().equals(player.getUniqueId().toString())) {
-                            isUsingClient = true;
-                        }
-                    } else {
-                        LogManager.consoleError("Refuse connection for " + player.getName() + " (http error)");
-                        e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur d'authentification: " + httpReply.getJsonResponse().get("error"));
-                        return;
-                    }
-                } catch (Exception exception) {
-                    LogManager.consoleError("Refuse connection for " + player.getName() + " (auth error)");
-                    e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Erreur lors de l'authentification");
-                    exception.printStackTrace();
-                    return;
-                }
+                }.runTaskLater(this, 3);
+            } else {
+                LogManager.consoleError(String.format("Refuse connection for %s in %d ms for reason: %s", player.getName(), System.currentTimeMillis() - start_task_time, message));
+                e.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
             }
-        }
 
-        if (!isUsingClient) {
-            LogManager.consoleError("Refuse connection for " + player.getName() + " (not using client)");
-            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !");
-        } else {
-            LogManager.consoleSuccess("Accept connection for " + player.getName());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    playersUsingClient.add(player.getUniqueId());
-                    player.sendMessage(ChatColor.GREEN + "Authentifié avec succès sur ScandiCraft !");
-                }
-            }.runTaskLater(this, 3);
+            executorService.shutdown();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, ChatColor.RED + "Impossible de se connecter au serveur d'authentification..");
         }
     }
 
