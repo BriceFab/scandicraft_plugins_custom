@@ -1,5 +1,6 @@
 package net.scandicraft;
 
+import net.scandicraft.config.Config;
 import net.scandicraft.config.ScandiCraftMultiplayer;
 import net.scandicraft.http.HTTPClient;
 import net.scandicraft.http.HTTPEndpoints;
@@ -7,6 +8,7 @@ import net.scandicraft.http.HTTPReply;
 import net.scandicraft.http.HttpStatus;
 import net.scandicraft.http.entity.VerifyTokenEntity;
 import net.scandicraft.logs.LogManager;
+import net.scandicraft.packetListeners.PacketsListener;
 import net.scandicraft.packetListeners.ProtocolLibManager;
 import net.scandicraft.packets.CustomPacketManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
@@ -15,6 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -107,10 +110,21 @@ public final class ScandiAuth extends JavaPlugin implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (Config.ENABLE_DEBUG_PACKETS_LISTENER) {
+            PacketsListener.injectPlayer(e.getPlayer());
+        }
+    }
+
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
         if (playersUsingClient.contains(uuid)) {
             playersUsingClient.remove(uuid);
+        }
+
+        if (Config.ENABLE_DEBUG_PACKETS_LISTENER) {
+            PacketsListener.uninjectPlayer(e.getPlayer());
         }
     }
 
