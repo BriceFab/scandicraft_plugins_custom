@@ -3,7 +3,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 apply plugin: 'java'
 
 group = 'ScandiAuth'    //Nom du plugin
-version = '1.0.1'       //Version du plugin
+version = '1.0.3'       //Version du plugin
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'

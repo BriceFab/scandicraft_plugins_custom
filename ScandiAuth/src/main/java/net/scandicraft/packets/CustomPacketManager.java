@@ -12,7 +12,7 @@ import net.minecraft.server.v1_8_R3.EnumProtocol;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.scandicraft.ScandiAuth;
-import net.scandicraft.logs.LogManager;
+import net.scandicraft.config.Config;
 import net.scandicraft.packets.client.CPacketAuthToken;
 import net.scandicraft.packets.server.SPacket;
 import org.bukkit.entity.Player;
@@ -26,7 +26,9 @@ public class CustomPacketManager {
     public static final HashMap<Class<? extends SCPacket>, PacketType> packetToType = new HashMap<>();
 
     public static void registerPackets() {
-        registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
+        if (Config.CHECK_AUTH_PACKET) {
+            registerPacket(CPacketAuthToken.class, PacketsID.CPacketAuthToken, Sender.CLIENT, EnumProtocol.LOGIN);
+        }
     }
 
     public static void registerPacket(Class<? extends SCPacket> packetClass, int packetId, Sender sender, EnumProtocol protocol) {

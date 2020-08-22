@@ -1,5 +1,6 @@
 package net.scandicraft.tasks;
 
+import net.scandicraft.config.Config;
 import net.scandicraft.config.ScandiCraftMultiplayer;
 import net.scandicraft.http.HTTPClient;
 import net.scandicraft.http.HTTPEndpoints;
@@ -8,9 +9,10 @@ import net.scandicraft.http.HttpStatus;
 import net.scandicraft.http.entity.VerifyTokenEntity;
 import net.scandicraft.logs.LogManager;
 import net.scandicraft.packets.client.CPacketAuthToken;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
 public class VerifyClientTask implements Callable<VerifyClientResponse> {
@@ -29,13 +31,22 @@ public class VerifyClientTask implements Callable<VerifyClientResponse> {
         final String[] hostname = this.hostname.split(":")[0].split("\0");
         final String default_error = "Veuillez télécharger le launcher ScandiCraft (https://scandicraft-mc.fr/jouer) !";
 
-        if (hostname.length == 2) {
+        if (hostname.length == 3) {
             //contrôle l'auth key qui doit être passée dans l'hostname
-            if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY)) {
-                //attends 2 secondes pour la reception du token
-                Thread.sleep(2000);
-                final String token = CPacketAuthToken.getToken();
-                LogManager.consoleWarn("token " + token);
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Zurich"));
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+            if (hostname[1].equals(ScandiCraftMultiplayer.AUTH_KEY + day + hour)) {
+                String token;
+                if (Config.CHECK_AUTH_PACKET) {
+                    //attends 2 secondes pour la reception du token
+                    Thread.sleep(2000);
+                    token = CPacketAuthToken.getToken();
+                } else {
+                    token = hostname[2];
+                }
+                LogManager.consoleInfo("VerifyClient token: " + token);
 
                 //si pas de token
                 if (token == null || token.equals("") || token.length() <= 0) {
