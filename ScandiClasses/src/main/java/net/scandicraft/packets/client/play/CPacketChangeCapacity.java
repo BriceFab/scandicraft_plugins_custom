@@ -2,6 +2,7 @@ package net.scandicraft.packets.client.play;
 
 import net.minecraft.server.v1_8_R3.PacketDataSerializer;
 import net.minecraft.server.v1_8_R3.PacketListener;
+import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.scandicraft.capacities.CapacityManager;
 import net.scandicraft.logs.LogManager;
 import net.scandicraft.packets.client.CPacket;
@@ -23,6 +24,9 @@ public class CPacketChangeCapacity extends CPacket {
 
     @Override
     public void handle(PacketListener listener) {
+        PlayerConnection playerConnection = (PlayerConnection) listener;
+        LogManager.consoleWarn("handle playerConnection " + playerConnection.getPlayer());
+
         Player player = Bukkit.getPlayer(this.playerId);
         if (player != null) {
             if (this.nextCapacity.equals("next_from_list")) {
